@@ -1,0 +1,79 @@
+[
+  {
+    "name": "positive max string length",
+    "registry": [],
+    "schema": {
+      "maxLength": 3
+    },
+    "instances": [
+      {
+        "instance": {
+          "not": "a string"
+        },
+        "errors": []
+      },
+      {
+        "instance": "",
+        "errors": []
+      },
+      {
+        "instance": "abc",
+        "errors": []
+      },
+      {
+        "instance": "a\u0000c",
+        "errors": []
+      },
+      {
+        "instance": "a\uffffc",
+        "errors": []
+      },
+      {
+        "instance": "abcde",
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "/maxLength"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "zero max string length rejects all nonempty strings",
+    "registry": [],
+    "schema": {
+      "maxLength": 0
+    },
+    "instances": [
+      {
+        "instance": {
+          "not": "a string"
+        },
+        "errors": []
+      },
+      {
+        "instance": "",
+        "errors": []
+      },
+      {
+        "instance": "abc",
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "/maxLength"
+          }
+        ]
+      },
+      {
+        "instance": "abcde",
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "/maxLength"
+          }
+        ]
+      }
+    ]
+  }
+]

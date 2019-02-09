@@ -1,0 +1,69 @@
+[
+  {
+    "name": "positive min string length",
+    "registry": [],
+    "schema": {
+      "minLength": 3
+    },
+    "instances": [
+      {
+        "instance": {
+          "not": "a string"
+        },
+        "errors": []
+      },
+      {
+        "instance": "abcde",
+        "errors": []
+      },
+      {
+        "instance": "abc",
+        "errors": []
+      },
+      {
+        "instance": "a\u0000c",
+        "errors": []
+      },
+      {
+        "instance": "a\uffffc",
+        "errors": []
+      },
+      {
+        "instance": "",
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "/minLength"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "zero min string length accepts all strings",
+    "registry": [],
+    "schema": {
+      "minLength": 0
+    },
+    "instances": [
+      {
+        "instance": {
+          "not": "a string"
+        },
+        "errors": []
+      },
+      {
+        "instance": "",
+        "errors": []
+      },
+      {
+        "instance": "abc",
+        "errors": []
+      },
+      {
+        "instance": "abcde",
+        "errors": []
+      }
+    ]
+  }
+]

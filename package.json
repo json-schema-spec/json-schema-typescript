@@ -1,0 +1,25 @@
+{
+  "devDependencies": {
+    "@types/node": "^10.12.24",
+    "jest": "^23.0.0",
+    "ts-jest": "^23.10.5",
+    "typedoc": "^0.14.2",
+    "@types/jest": "^23.0.0",
+    "typescript": "^3.3.1"
+  },
+  "dependencies": {
+    "@json-schema-spec/json-pointer": "^0.1.0",
+    "whatwg-url": "^7.0.0"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "rootDir": "src",
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "js",
+      "ts"
+    ]
+  }
+}

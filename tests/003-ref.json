@@ -1,0 +1,312 @@
+[
+  {
+    "name": "reference to arbitrary part of the same schema",
+    "registry": [],
+    "schema": {
+      "foobar": {
+        "baz": {
+          "type": "null"
+        }
+      },
+      "$ref": "#/foobar/baz"
+    },
+    "instances": [
+      {
+        "instance": null,
+        "errors": []
+      },
+      {
+        "instance": true,
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "/foobar/baz/type"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "nested references in same schema",
+    "registry": [],
+    "schema": {
+      "foobar": {
+        "baz": {
+          "$ref": "#/foobar2/baz"
+        }
+      },
+      "foobar2": {
+        "baz": {
+          "type": "null"
+        }
+      },
+      "$ref": "#/foobar/baz"
+    },
+    "instances": [
+      {
+        "instance": null,
+        "errors": []
+      },
+      {
+        "instance": true,
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "/foobar2/baz/type"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "references to other schemas",
+    "registry": [
+      {
+        "$id": "urn:example:foo",
+        "type": "null"
+      }
+    ],
+    "schema": {
+      "$ref": "urn:example:foo#"
+    },
+    "instances": [
+      {
+        "instance": null,
+        "errors": []
+      },
+      {
+        "instance": true,
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "/type",
+            "uri": "urn:example:foo"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "nested references to other schemas",
+    "registry": [
+      {
+        "$id": "urn:example:foo",
+        "$ref": "urn:example:bar"
+      },
+      {
+        "$id": "urn:example:bar",
+        "type": "null"
+      }
+    ],
+    "schema": {
+      "$ref": "urn:example:foo"
+    },
+    "instances": [
+      {
+        "instance": null,
+        "errors": []
+      },
+      {
+        "instance": true,
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "/type",
+            "uri": "urn:example:bar"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "recursive schema",
+    "registry": [],
+    "schema": {
+      "items": {
+        "$ref": "#"
+      },
+      "type": "array"
+    },
+    "instances": [
+      {
+        "instance": [],
+        "errors": []
+      },
+      {
+        "instance": [
+          [],
+          "a"
+        ],
+        "errors": [
+          {
+            "instancePath": "/1",
+            "schemaPath": "/type"
+          }
+        ]
+      },
+      {
+        "instance": [
+          [],
+          [
+            []
+          ],
+          [
+            [
+              [],
+              [
+                "a"
+              ]
+            ]
+          ]
+        ],
+        "errors": [
+          {
+            "instancePath": "/2/0/1/0",
+            "schemaPath": "/type"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mutually recursive schemas",
+    "registry": [
+      {
+        "$id": "urn:example:foo",
+        "items": {
+          "$ref": "urn:example:bar"
+        }
+      },
+      {
+        "$id": "urn:example:bar",
+        "$ref": "urn:example:foo",
+        "type": "array"
+      }
+    ],
+    "schema": {
+      "$ref": "urn:example:bar"
+    },
+    "instances": [
+      {
+        "instance": [],
+        "errors": []
+      },
+      {
+        "instance": [
+          [],
+          "a"
+        ],
+        "errors": [
+          {
+            "instancePath": "/1",
+            "schemaPath": "/type",
+            "uri": "urn:example:bar"
+          }
+        ]
+      },
+      {
+        "instance": [
+          [],
+          [
+            []
+          ],
+          [
+            [
+              [],
+              [
+                "a"
+              ]
+            ]
+          ]
+        ],
+        "errors": [
+          {
+            "instancePath": "/2/0/1/0",
+            "schemaPath": "/type",
+            "uri": "urn:example:bar"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "changing base URI",
+    "registry": [
+      {
+        "$id": "http://example.com/foo",
+        "$ref": "#/foobar/baz",
+        "foobar": {
+          "baz": {
+            "type": "null"
+          }
+        }
+      }
+    ],
+    "schema": {
+      "$ref": "http://example.com/foo",
+      "foobar": {
+        "baz": {
+          "type": "string"
+        }
+      }
+    },
+    "instances": [
+      {
+        "instance": null,
+        "errors": []
+      },
+      {
+        "instance": "foo",
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "/foobar/baz/type",
+            "uri": "http://example.com/foo"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "relative URL handling",
+    "registry": [
+      {
+        "$id": "http://example.com/foo/",
+        "$ref": "#/foobar/baz",
+        "foobar": {
+          "baz": {
+            "type": "null"
+          }
+        }
+      },
+      {
+        "$id": "http://example.com/foo/bar/baz",
+        "$ref": "../#/foobar/baz"
+      }
+    ],
+    "schema": {
+      "$ref": "http://example.com/foo/bar/baz",
+      "foobar": {
+        "baz": {
+          "type": "string"
+        }
+      }
+    },
+    "instances": [
+      {
+        "instance": null,
+        "errors": []
+      },
+      {
+        "instance": "foo",
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "/foobar/baz/type",
+            "uri": "http://example.com/foo/"
+          }
+        ]
+      }
+    ]
+  }
+]
