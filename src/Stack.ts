@@ -11,6 +11,14 @@ export default class Stack {
     this.schemas = [];
   }
 
+  public pushInstanceToken(token: string) {
+    this.instance.push(token);
+  }
+
+  public popInstanceToken() {
+    this.instance.pop();
+  }
+
   public pushSchema(uri: URL | null, tokens: string[]) {
     this.schemas.push({ uri, tokens });
   }

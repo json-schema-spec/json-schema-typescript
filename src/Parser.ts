@@ -40,6 +40,28 @@ export default class Parser {
       }
     }
 
+    const items = (input as any).items;
+    if (items !== undefined) {
+      this.push("items");
+
+      if (Array.isArray(items)) {
+        const schemas = items.map((item) => this.parse(item));
+        schema.items = { single: false, schemas };
+      } else if (typeof items === "object") {
+        schema.items = { single: true, schemas: [this.parse(items)] };
+      }
+
+      this.pop();
+    }
+
     return this.registry.set(null, schema);
+  }
+
+  private push(token: string) {
+    this.tokens.push(token);
+  }
+
+  private pop() {
+    this.tokens.pop();
   }
 }

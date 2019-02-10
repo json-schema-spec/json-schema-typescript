@@ -60,6 +60,33 @@ export default class Vm {
         this.reportError();
         this.stack.popSchemaToken();
       }
+
+      if (schema.items) {
+        if (schema.items.single) {
+          const itemSchema = this.registry.getIndex(schema.items.schemas[0]);
+
+          this.stack.pushSchemaToken("items");
+          for (const [index, elem] of instance.entries()) {
+            this.stack.pushInstanceToken(index.toString());
+            this.execSchema(itemSchema, elem);
+            this.stack.popInstanceToken();
+          }
+          this.stack.popSchemaToken();
+        } else {
+          this.stack.pushSchemaToken("items");
+          for (let i = 0; i < schema.items.schemas.length && i < instance.length; i++) {
+            const itemSchema = this.registry.getIndex(schema.items.schemas[i]);
+            const elem = instance[i];
+
+            this.stack.pushSchemaToken(i.toString());
+            this.stack.pushInstanceToken(i.toString());
+            this.execSchema(itemSchema, elem);
+            this.stack.popSchemaToken();
+            this.stack.popInstanceToken();
+          }
+          this.stack.popSchemaToken();
+        }
+      }
     } else {
       if (schema.type && !schema.type.types.includes(JSONType.Object)) {
         this.stack.pushSchemaToken("type");

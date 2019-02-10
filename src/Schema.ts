@@ -2,11 +2,17 @@ import InvalidSchemaError from "./InvalidSchemaError";
 
 export default interface Schema {
   type?: SchemaType;
+  items?: SchemaItems;
 }
 
 export interface SchemaType {
   single: boolean;
   types: JSONType[];
+}
+
+export interface SchemaItems {
+  single: boolean;
+  schemas: number[];
 }
 
 export enum JSONType {
