@@ -21,8 +21,6 @@ export default class Vm {
     this.stack.pushSchema(uri, []);
     const schema = this.registry.get(uri);
 
-    const errors = [];
-
     if (instance === null) {
       if (schema.type && !schema.type.types.includes(JSONType.Null)) {
         this.stack.pushSchemaToken("type");
