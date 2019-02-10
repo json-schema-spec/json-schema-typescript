@@ -1,4 +1,6 @@
+import Ptr from "@json-schema-spec/json-pointer";
 import { URL } from "whatwg-url";
+import { ValidationError } from "./ValidationResult";
 
 export default class Stack {
   private instance: string[];
@@ -8,9 +10,31 @@ export default class Stack {
     this.instance = [];
     this.schemas = [];
   }
+
+  public pushSchema(uri: URL | null, tokens: string[]) {
+    this.schemas.push({ uri, tokens });
+  }
+
+  public pushSchemaToken(token: string) {
+    this.schemas[this.schemas.length - 1].tokens.push(token);
+  }
+
+  public popSchematoken() {
+    this.schemas[this.schemas.length - 1].tokens.pop();
+  }
+
+  public error(): ValidationError {
+    const schema = this.schemas[this.schemas.length - 1];
+
+    return {
+      instancePath: new Ptr([...this.instance]),
+      schemaPath: new Ptr([...schema.tokens]),
+      schemaURI: schema.uri,
+    };
+  }
 }
 
 interface SchemaStack {
-  uri: URL;
+  uri: URL | null;
   tokens: string[];
 }
