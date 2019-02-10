@@ -19,7 +19,7 @@ export default class Stack {
     this.schemas[this.schemas.length - 1].tokens.push(token);
   }
 
-  public popSchematoken() {
+  public popSchemaToken() {
     this.schemas[this.schemas.length - 1].tokens.pop();
   }
 

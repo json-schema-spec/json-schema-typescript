@@ -29,13 +29,13 @@ export default class Vm {
       if (schema.type && !schema.type.types.includes(JSONType.Null)) {
         this.stack.pushSchemaToken("type");
         this.reportError();
-        this.stack.popSchematoken();
+        this.stack.popSchemaToken();
       }
     } else if (typeof instance === "boolean") {
       if (schema.type && !schema.type.types.includes(JSONType.Boolean)) {
         this.stack.pushSchemaToken("type");
         this.reportError();
-        this.stack.popSchematoken();
+        this.stack.popSchemaToken();
       }
     } else if (typeof instance === "number") {
       let typeOk = false;
@@ -46,25 +46,25 @@ export default class Vm {
       if (!typeOk && schema.type && !schema.type.types.includes(JSONType.Number)) {
         this.stack.pushSchemaToken("type");
         this.reportError();
-        this.stack.popSchematoken();
+        this.stack.popSchemaToken();
       }
     } else if (typeof instance === "string") {
       if (schema.type && !schema.type.types.includes(JSONType.String)) {
         this.stack.pushSchemaToken("type");
         this.reportError();
-        this.stack.popSchematoken();
+        this.stack.popSchemaToken();
       }
     } else if (Array.isArray(instance)) {
       if (schema.type && !schema.type.types.includes(JSONType.Array)) {
         this.stack.pushSchemaToken("type");
         this.reportError();
-        this.stack.popSchematoken();
+        this.stack.popSchemaToken();
       }
     } else {
       if (schema.type && !schema.type.types.includes(JSONType.Object)) {
         this.stack.pushSchemaToken("type");
         this.reportError();
-        this.stack.popSchematoken();
+        this.stack.popSchemaToken();
       }
     }
 
