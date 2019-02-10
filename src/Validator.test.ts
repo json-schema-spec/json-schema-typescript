@@ -4,6 +4,7 @@ import * as path from "path";
 import { URL } from "whatwg-url";
 
 import { Validator } from "./Validator";
+import InvalidSchemaError from "./InvalidSchemaError";
 
 const TEST_DIR = path.join(__dirname, "../tests");
 
@@ -37,5 +38,24 @@ describe("Validator", () => {
         }
       });
     }
+  });
+
+  describe("invalid schemas", () => {
+    it("throws InvalidSchemaError on bad schemas", () => {
+      const badSchemas = [
+        { type: "not-a-type" },
+        { type: 3.14 },
+        { type: ["not-a-type"] },
+        { type: [3.14] },
+        { items: 3 },
+        { items: { type: "not-a-type" } },
+        { items: ["not-a-schema"] },
+        { items: [{ type: "not-a-type" }] },
+      ];
+
+      for (const schema of badSchemas) {
+        expect(() => new Validator([schema])).toThrow(InvalidSchemaError);
+      }
+    });
   });
 });

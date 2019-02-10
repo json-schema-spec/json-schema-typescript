@@ -25,7 +25,11 @@ export default class Parser {
     this.tokens = tokens;
   }
 
-  private parse(input: object): number {
+  private parse(input: any): number {
+    if (typeof input !== "object") {
+      throw new InvalidSchemaError();
+    }
+
     const schema: Schema = {};
 
     const type = (input as any).type;
@@ -49,6 +53,8 @@ export default class Parser {
         schema.items = { single: false, schemas };
       } else if (typeof items === "object") {
         schema.items = { single: true, schemas: [this.parse(items)] };
+      } else {
+        throw new InvalidSchemaError();
       }
 
       this.pop();
