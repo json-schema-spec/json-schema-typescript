@@ -2,7 +2,7 @@ import Ptr from "@json-schema-spec/json-pointer";
 import { URL } from "whatwg-url";
 
 import Registry from "./Registry";
-import { JSONType } from "./Schema";
+import Schema, { JSONType } from "./Schema";
 import Stack from "./Stack";
 import { ValidationError, ValidationResult } from "./ValidationResult";
 
@@ -21,6 +21,10 @@ export default class Vm {
     this.stack.pushSchema(uri, []);
     const schema = this.registry.get(uri);
 
+    return this.execSchema(schema, instance);
+  }
+
+  private execSchema(schema: Schema, instance: any): ValidationResult {
     if (instance === null) {
       if (schema.type && !schema.type.types.includes(JSONType.Null)) {
         this.stack.pushSchemaToken("type");
