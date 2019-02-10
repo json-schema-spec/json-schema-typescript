@@ -3,8 +3,8 @@ import * as fs from "fs";
 import * as path from "path";
 import { URL } from "whatwg-url";
 
-import { Validator } from "./Validator";
 import InvalidSchemaError from "./InvalidSchemaError";
+import { Validator } from "./Validator";
 
 const TEST_DIR = path.join(__dirname, "../tests");
 
