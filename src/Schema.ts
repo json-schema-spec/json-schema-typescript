@@ -1,13 +1,24 @@
+import Ptr from "@json-schema-spec/json-pointer";
+import { URL } from "whatwg-url";
+
 import InvalidSchemaError from "./InvalidSchemaError";
 
 export default interface Schema {
+  id: URL | null;
   bool?: SchemaBool;
+  ref?: SchemaRef;
   type?: SchemaType;
   items?: SchemaItems;
 }
 
 export interface SchemaBool {
   value: boolean;
+}
+
+export interface SchemaRef {
+  baseURI: URL | null;
+  ptr: Ptr;
+  uri: URL;
 }
 
 export interface SchemaType {
