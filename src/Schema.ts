@@ -1,10 +1,9 @@
 import Ptr from "@json-schema-spec/json-pointer";
-import { URL } from "whatwg-url";
 
 import InvalidSchemaError from "./InvalidSchemaError";
 
 export default interface Schema {
-  id: URL | null;
+  id: string;
   bool?: SchemaBool;
   ref?: SchemaRef;
   type?: SchemaType;
@@ -16,9 +15,10 @@ export interface SchemaBool {
 }
 
 export interface SchemaRef {
-  baseURI: URL | null;
+  baseURI: string;
   ptr: Ptr;
-  uri: URL;
+  uri: string;
+  schema: number;
 }
 
 export interface SchemaType {

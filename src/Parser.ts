@@ -1,44 +1,48 @@
+import Ptr from "@json-schema-spec/json-pointer";
 import { URL } from "whatwg-url";
 
 import InvalidSchemaError from "./InvalidSchemaError";
 import Registry from "./Registry";
 import Schema, { parseJSONType } from "./Schema";
-import Ptr from "@json-schema-spec/json-pointer";
 
 export default class Parser {
-  public static parseRootSchema(registry: Registry, input: object): Schema {
-    const index = new Parser(registry, null, []).parse(input);
+  public static parseRootSchema(registry: Registry, input: any): Schema {
+    const index = new Parser(registry, "", []).parse(input);
     return registry.getIndex(index);
   }
 
-  public static parseSubSchema(registry: Registry, baseURI: URL, tokens: string[], input: object): Schema {
+  public static parseSubSchema(registry: Registry, baseURI: string, tokens: string[], input: any): Schema {
     const index = new Parser(registry, baseURI, tokens).parse(input);
     return registry.getIndex(index);
   }
 
   private registry: Registry;
-  private baseURI: URL | null;
+  private baseURI: string;
   private tokens: string[];
 
-  constructor(registry: Registry, baseURI: URL | null, tokens: string[]) {
+  constructor(registry: Registry, baseURI: string, tokens: string[]) {
     this.registry = registry;
     this.baseURI = baseURI;
     this.tokens = tokens;
   }
 
   private parse(input: any): number {
-    const schema: Schema = { id: null };
+    const schema: Schema = { id: "" };
 
     if (typeof input === "boolean") {
+      // Handle a boolean schema.
       schema.bool = { value: input };
     } else if (typeof input === "object") {
+      // Handle an object schema.
+
+      // Only attempt to parse the "$id" keyword when dealing with a root
+      // schema.
       if (this.tokens.length === 0) {
-        const id = (input as any).id;
+        const id = (input as any).$id;
         if (id !== undefined) {
           if (typeof id === "string") {
-            const uri = new URL(id);
-            this.baseURI = uri;
-            schema.id = uri;
+            this.baseURI = id;
+            schema.id = id;
           } else {
             throw new InvalidSchemaError();
           }
@@ -48,21 +52,40 @@ export default class Parser {
       const ref = (input as any).$ref;
       if (ref !== undefined) {
         if (typeof ref === "string") {
-          const base = this.baseURI ? this.baseURI.toString() : undefined;
-          const uri = new URL(ref, base);
-          const fragment = uri.hash === "" ? "" : uri.hash.substr(1);
+          let fragment = "";
+          let uri = "";
 
-          // schema.ref.baseURI is the fragment-less URI that the $ref is
-          // referring to. This will be used to produce error information on
-          // which schema produced an error.
-          let baseURI = null;
-          if (this.baseURI) {
-            baseURI = new URL(this.baseURI.toString());
-            baseURI.hash = "";
+          if (this.baseURI === "") {
+            try {
+              const parsedURI = new URL(ref);
+
+              uri = parsedURI.toJSON();
+              fragment = parsedURI.hash === "" ? "" : parsedURI.hash.substring(1);
+            } catch {
+              // If parsing the URI failed, then attempt to parse as a fragment.
+              // This is implicitly using some conceptual "empty URI" as the
+              // base URI, a notion which works only for relative URIs which are
+              // just fragments.
+              if (!ref.startsWith("#")) {
+                throw new InvalidSchemaError();
+              }
+
+              uri = ref;
+              fragment = ref.substring(1);
+            }
+          } else {
+            const parsedURI = new URL(ref, this.baseURI);
+
+            uri = parsedURI.toJSON();
+            fragment = parsedURI.hash === "" ? "" : parsedURI.hash.substring(1);
           }
 
-          const ptr = Ptr.parse(fragment);
-          schema.ref = { baseURI, ptr, uri };
+          schema.ref = {
+            baseURI: this.baseURI,
+            ptr: Ptr.parse(fragment),
+            schema: -1,
+            uri,
+          };
         } else {
           throw new InvalidSchemaError();
         }
@@ -99,7 +122,17 @@ export default class Parser {
       throw new InvalidSchemaError();
     }
 
-    return this.registry.set(null, schema);
+    const ptr = new Ptr(this.tokens).toString();
+    if (this.baseURI === "") {
+      return this.registry.set(ptr === "" ? "" : `#${ptr}`, schema);
+    } else {
+      if (ptr === "") {
+        return this.registry.set(this.baseURI, schema);
+      } else {
+        const uri = new URL(`#${ptr}`, this.baseURI);
+        return this.registry.set(uri.toJSON(), schema);
+      }
+    }
   }
 
   private push(token: string) {

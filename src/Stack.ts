@@ -1,5 +1,4 @@
 import Ptr from "@json-schema-spec/json-pointer";
-import { URL } from "whatwg-url";
 import { ValidationError } from "./ValidationResult";
 
 export default class Stack {
@@ -19,8 +18,12 @@ export default class Stack {
     this.instance.pop();
   }
 
-  public pushSchema(uri: URL | null, tokens: string[]) {
+  public pushSchema(uri: string, tokens: string[]) {
     this.schemas.push({ uri, tokens });
+  }
+
+  public popSchema() {
+    this.schemas.pop();
   }
 
   public pushSchemaToken(token: string) {
@@ -43,6 +46,6 @@ export default class Stack {
 }
 
 interface SchemaStack {
-  uri: URL | null;
+  uri: string;
   tokens: string[];
 }

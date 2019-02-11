@@ -1,5 +1,4 @@
 import Ptr from "@json-schema-spec/json-pointer";
-import { URL } from "whatwg-url";
 
 import Registry from "./Registry";
 import Schema, { JSONType } from "./Schema";
@@ -17,7 +16,7 @@ export default class Vm {
     this.errors = [];
   }
 
-  public exec(uri: URL | null, instance: any): ValidationResult {
+  public exec(uri: string, instance: any): ValidationResult {
     this.stack.pushSchema(uri, []);
     const schema = this.registry.get(uri);
 
@@ -31,6 +30,12 @@ export default class Vm {
       }
 
       return new ValidationResult(this.errors);
+    }
+
+    if (schema.ref) {
+      this.stack.pushSchema(schema.ref.baseURI, [...schema.ref.ptr.tokens]);
+      this.execSchema(this.registry.getIndex(schema.ref.schema), instance);
+      this.stack.popSchema();
     }
 
     if (instance === null) {

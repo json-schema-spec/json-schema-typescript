@@ -13,4 +13,8 @@ export default class Arena<T> {
     this.buffer.push(item);
     return this.buffer.length - 1;
   }
+
+  public values(): T[] {
+    return this.buffer;
+  }
 }
