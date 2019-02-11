@@ -26,38 +26,40 @@ export default class Parser {
   }
 
   private parse(input: any): number {
-    if (typeof input !== "object") {
-      throw new InvalidSchemaError();
-    }
-
     const schema: Schema = {};
 
-    const type = (input as any).type;
-    if (type !== undefined) {
-      if (Array.isArray(type)) {
-        const types = type.map((t) => parseJSONType(t));
-        schema.type = { single: false, types };
-      } else if (typeof type === "string") {
-        schema.type = { single: true, types: [parseJSONType(type)] };
-      } else {
-        throw new InvalidSchemaError();
-      }
-    }
-
-    const items = (input as any).items;
-    if (items !== undefined) {
-      this.push("items");
-
-      if (Array.isArray(items)) {
-        const schemas = items.map((item) => this.parse(item));
-        schema.items = { single: false, schemas };
-      } else if (typeof items === "object") {
-        schema.items = { single: true, schemas: [this.parse(items)] };
-      } else {
-        throw new InvalidSchemaError();
+    if (typeof input === "boolean") {
+      schema.bool = { value: input };
+    } else if (typeof input === "object") {
+      const type = (input as any).type;
+      if (type !== undefined) {
+        if (Array.isArray(type)) {
+          const types = type.map((t) => parseJSONType(t));
+          schema.type = { single: false, types };
+        } else if (typeof type === "string") {
+          schema.type = { single: true, types: [parseJSONType(type)] };
+        } else {
+          throw new InvalidSchemaError();
+        }
       }
 
-      this.pop();
+      const items = (input as any).items;
+      if (items !== undefined) {
+        this.push("items");
+
+        if (Array.isArray(items)) {
+          const schemas = items.map((item) => this.parse(item));
+          schema.items = { single: false, schemas };
+        } else if (typeof items === "object") {
+          schema.items = { single: true, schemas: [this.parse(items)] };
+        } else {
+          throw new InvalidSchemaError();
+        }
+
+        this.pop();
+      }
+    } else {
+      throw new InvalidSchemaError();
     }
 
     return this.registry.set(null, schema);

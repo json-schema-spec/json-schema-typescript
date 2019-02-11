@@ -25,6 +25,14 @@ export default class Vm {
   }
 
   private execSchema(schema: Schema, instance: any): ValidationResult {
+    if (schema.bool) {
+      if (!schema.bool.value) {
+        this.reportError();
+      }
+
+      return new ValidationResult(this.errors);
+    }
+
     if (instance === null) {
       if (schema.type && !schema.type.types.includes(JSONType.Null)) {
         this.stack.pushSchemaToken("type");

@@ -1,8 +1,13 @@
 import InvalidSchemaError from "./InvalidSchemaError";
 
 export default interface Schema {
+  bool?: SchemaBool;
   type?: SchemaType;
   items?: SchemaItems;
+}
+
+export interface SchemaBool {
+  value: boolean;
 }
 
 export interface SchemaType {
