@@ -1,7 +1,7 @@
 import Ptr from "@json-schema-spec/json-pointer";
-import { URL } from "whatwg-url";
+import { serialize as serializeURI, URIComponents } from "uri-js";
 
-import Parser from "./Parser";
+import Parser, { EMPTY_URI } from "./Parser";
 import Registry from "./Registry";
 import { ValidationResult } from "./ValidationResult";
 import Vm from "./Vm";
@@ -26,39 +26,45 @@ export class Validator {
     };
 
     const registry = new Registry();
-    const rawSchemas: { [uri: string]: any } = {};
+    const rawSchemas = new Map<string, any>();
 
     for (const schema of schemas) {
       const parsedSchema = Parser.parseRootSchema(registry, schema);
-      rawSchemas[parsedSchema.id] = schema;
+      rawSchemas.set(serializeURI(parsedSchema.id), schema);
     }
 
     let missingURIs = registry.populateRefs(); // URIs which must be accounted for
-    const undefinedURIs: string[] = []; // URIs which cannot be accounted for
+    const undefinedURIs: URIComponents[] = []; // URIs which cannot be accounted for
 
     while (missingURIs.length > 0 && undefinedURIs.length === 0) {
       console.log("processing", missingURIs, undefinedURIs);
       console.log("registry", registry);
+      console.log("rawschemas", rawSchemas);
 
       for (const uri of missingURIs) {
-        const parsedURI = new URL(uri);
+        const baseURI = { ...uri };
+        baseURI.fragment = undefined;
 
-        const baseURI = new URL(uri);
-        baseURI.hash = "";
-
-        const rawSchema = rawSchemas[baseURI.toJSON()];
+        console.log("looking for raw schema", serializeURI(baseURI));
+        const rawSchema = rawSchemas.get(serializeURI(baseURI));
         if (rawSchema === undefined) {
-          undefinedURIs.push(baseURI.toJSON());
+          undefinedURIs.push(baseURI);
         } else {
-          const fragment = parsedURI.hash === "" ? "" : parsedURI.hash.substring(1);
+          console.log("found it", rawSchema, uri);
+          const fragment = uri.fragment || "";
           const ptr = Ptr.parse(fragment);
 
           const rawRefSchema = ptr.eval(rawSchema);
-          Parser.parseSubSchema(registry, baseURI.toJSON(), ptr.tokens, rawRefSchema);
+          Parser.parseSubSchema(registry, baseURI, ptr.tokens, rawRefSchema);
         }
       }
 
       missingURIs = registry.populateRefs();
+    }
+
+    if (undefinedURIs.length > 0) {
+      console.log("undefined URIs", undefinedURIs);
+      throw new Error(`undefined uris ${undefinedURIs}`);
     }
 
     this.registry = registry;
@@ -66,6 +72,6 @@ export class Validator {
 
   public validate(instance: object): ValidationResult {
     const vm = new Vm(this.registry);
-    return vm.exec("", instance);
+    return vm.exec(EMPTY_URI, instance);
   }
 }

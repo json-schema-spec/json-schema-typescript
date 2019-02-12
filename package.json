@@ -9,9 +9,8 @@
   },
   "dependencies": {
     "@json-schema-spec/json-pointer": "^0.1.0",
-    "@types/whatwg-url": "^6.4.0",
     "tslint": "^5.12.1",
-    "whatwg-url": "^7.0.0"
+    "uri-js": "^4.2.2"
   },
   "jest": {
     "transform": {

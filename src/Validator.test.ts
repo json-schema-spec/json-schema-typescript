@@ -1,7 +1,7 @@
 import Ptr from "@json-schema-spec/json-pointer";
 import * as fs from "fs";
 import * as path from "path";
-import { URL } from "whatwg-url";
+import { parse as parseURI, equal as equalURI } from "uri-js";
 
 import InvalidSchemaError from "./InvalidSchemaError";
 import { Validator } from "./Validator";
@@ -17,21 +17,37 @@ describe("Validator", () => {
 
         for (const { name, registry, schema, instances } of tests) {
           describe(name, () => {
-            const schemas = [...registry, schema];
-            const validator = new Validator(schemas);
-
             for (const [index, { instance, errors }] of instances.entries()) {
               it(index.toString(), () => {
-                const expected = errors.map((error: any) => {
+                const schemas = [...registry, schema];
+                const validator = new Validator(schemas);
+
+                const expectedPaths = errors.map((error: any) => {
                   return {
                     instancePath: Ptr.parse(error.instancePath),
                     schemaPath: Ptr.parse(error.schemaPath),
-                    schemaURI: error.uri ? new URL(error.uri) : null,
                   };
                 });
 
+                const expectedURIs = errors.map((error: any) => {
+                  return error.uri ? parseURI(error.uri) : {};
+                });
+
                 const result = validator.validate(instance);
-                expect(result.errors).toEqual(expected);
+
+                const actualPaths = result.errors.map((error) => {
+                  return {
+                    instancePath: error.instancePath,
+                    schemaPath: error.schemaPath,
+                  };
+                });
+
+                expect(actualPaths).toEqual(expectedPaths);
+                for (let i = 0; i < result.errors.length; i++) {
+                  console.log(result.errors[i].schemaURI, expectedURIs[i])
+                  const equal = equalURI(result.errors[i].schemaURI, expectedURIs[i]);
+                  expect(equal).toBe(true);
+                }
               });
             }
           });

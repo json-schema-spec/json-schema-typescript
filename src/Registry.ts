@@ -1,12 +1,13 @@
-import Arena from "./Arena";
+import { serialize as serializeURI, URIComponents } from "uri-js";
+
 import Schema from "./Schema";
 
 export default class Registry {
-  private schemas: { [uri: string]: number };
+  private schemas: Map<string, number>;
   private arena: Schema[];
 
   constructor() {
-    this.schemas = {};
+    this.schemas = new Map();
     this.arena = [];
   }
 
@@ -14,29 +15,35 @@ export default class Registry {
     return this.arena[index];
   }
 
-  public get(uri: string): Schema {
-    return this.arena[this.schemas[uri]];
+  public get(uri: URIComponents): Schema {
+    const index = this.schemas.get(serializeURI(uri))!;
+    return this.arena[index];
   }
 
-  public set(uri: string, schema: Schema): number {
-    if (uri in this.schemas) {
-      return this.schemas[uri];
+  public set(uri: URIComponents, schema: Schema): number {
+    const serialized = serializeURI(uri);
+    const index = this.schemas.get(serialized);
+
+    if (index === undefined) {
+      this.arena.push(schema);
+      this.schemas.set(serialized, this.arena.length - 1);
+      return this.arena.length - 1;
+    } else {
+      return index;
     }
-
-    this.arena.push(schema);
-    this.schemas[uri] = this.arena.length - 1;
-    return this.arena.length - 1;
   }
 
-  public populateRefs(): string[] {
-    const missing: string[] = [];
+  public populateRefs(): URIComponents[] {
+    const missing: URIComponents[] = [];
 
     for (const schema of this.arena) {
       if (!schema.ref) {
         continue;
       }
 
-      const refIndex = this.schemas[schema.ref.uri];
+      console.log("serializing", schema.ref.uri);
+      console.log("result is", serializeURI(schema.ref.uri))
+      const refIndex = this.schemas.get(serializeURI(schema.ref.uri));
       if (refIndex === undefined) {
         missing.push(schema.ref.uri);
       } else {

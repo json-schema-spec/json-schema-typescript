@@ -1,9 +1,10 @@
 import Ptr from "@json-schema-spec/json-pointer";
+import { URIComponents } from "uri-js";
 
 import InvalidSchemaError from "./InvalidSchemaError";
 
 export default interface Schema {
-  id: string;
+  id: URIComponents;
   bool?: SchemaBool;
   ref?: SchemaRef;
   type?: SchemaType;
@@ -15,9 +16,9 @@ export interface SchemaBool {
 }
 
 export interface SchemaRef {
-  baseURI: string;
+  baseURI: URIComponents;
   ptr: Ptr;
-  uri: string;
+  uri: URIComponents;
   schema: number;
 }
 

@@ -1,4 +1,4 @@
-import Ptr from "@json-schema-spec/json-pointer";
+import { URIComponents } from "uri-js";
 
 import Registry from "./Registry";
 import Schema, { JSONType } from "./Schema";
@@ -16,7 +16,10 @@ export default class Vm {
     this.errors = [];
   }
 
-  public exec(uri: string, instance: any): ValidationResult {
+  public exec(uri: URIComponents, instance: any): ValidationResult {
+    console.log("registry", uri, this.registry);
+    console.log(this.registry.getIndex(0));
+    console.log(this.registry.getIndex(1));
     this.stack.pushSchema(uri, []);
     const schema = this.registry.get(uri);
 
@@ -24,6 +27,7 @@ export default class Vm {
   }
 
   private execSchema(schema: Schema, instance: any): ValidationResult {
+    console.log("schema", schema);
     if (schema.bool) {
       if (!schema.bool.value) {
         this.reportError();
