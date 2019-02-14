@@ -15,9 +15,6 @@ export default class Vm {
   }
 
   public exec(uri: string, instance: any): ValidationResult {
-    console.log("registry", uri, this.registry);
-    console.log(this.registry.getIndex(0));
-    console.log(this.registry.getIndex(1));
     this.stack.pushSchema(uri, []);
     const schema = this.registry.get(uri);
 
@@ -25,7 +22,6 @@ export default class Vm {
   }
 
   private execSchema(schema: Schema, instance: any): ValidationResult {
-    console.log("schema", schema);
     if (schema.bool) {
       if (!schema.bool.value) {
         this.reportError();
