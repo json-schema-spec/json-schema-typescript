@@ -1,7 +1,6 @@
 import Ptr from "@json-schema-spec/json-pointer";
 import * as fs from "fs";
 import * as path from "path";
-import { parse as parseURI, equal as equalURI } from "uri-js";
 
 import InvalidSchemaError from "./InvalidSchemaError";
 import { Validator } from "./Validator";
@@ -30,7 +29,7 @@ describe("Validator", () => {
                 });
 
                 const expectedURIs = errors.map((error: any) => {
-                  return error.uri ? parseURI(error.uri) : {};
+                  return error.uri ? error.uri : "";
                 });
 
                 const result = validator.validate(instance);
@@ -44,9 +43,7 @@ describe("Validator", () => {
 
                 expect(actualPaths).toEqual(expectedPaths);
                 for (let i = 0; i < result.errors.length; i++) {
-                  console.log(result.errors[i].schemaURI, expectedURIs[i])
-                  const equal = equalURI(result.errors[i].schemaURI, expectedURIs[i]);
-                  expect(equal).toBe(true);
+                  expect(result.errors[i].schemaURI).toEqual(expectedURIs[i]);
                 }
               });
             }

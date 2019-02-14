@@ -1,5 +1,4 @@
 import Ptr from "@json-schema-spec/json-pointer";
-import { URIComponents } from "uri-js";
 
 import { ValidationError } from "./ValidationResult";
 
@@ -20,7 +19,7 @@ export default class Stack {
     this.instance.pop();
   }
 
-  public pushSchema(uri: URIComponents, tokens: string[]) {
+  public pushSchema(uri: string, tokens: string[]) {
     this.schemas.push({ uri, tokens });
   }
 
@@ -48,6 +47,6 @@ export default class Stack {
 }
 
 interface SchemaStack {
-  uri: URIComponents;
+  uri: string;
   tokens: string[];
 }

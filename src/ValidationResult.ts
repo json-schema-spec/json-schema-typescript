@@ -1,5 +1,4 @@
 import Ptr from "@json-schema-spec/json-pointer";
-import { URIComponents } from "uri-js";
 
 export class ValidationResult {
   public errors: ValidationError[];
@@ -16,5 +15,5 @@ export class ValidationResult {
 export interface ValidationError {
   instancePath: Ptr;
   schemaPath: Ptr;
-  schemaURI: URIComponents;
+  schemaURI: string;
 }

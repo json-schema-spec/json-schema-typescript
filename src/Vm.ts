@@ -1,5 +1,3 @@
-import { URIComponents } from "uri-js";
-
 import Registry from "./Registry";
 import Schema, { JSONType } from "./Schema";
 import Stack from "./Stack";
@@ -16,7 +14,7 @@ export default class Vm {
     this.errors = [];
   }
 
-  public exec(uri: URIComponents, instance: any): ValidationResult {
+  public exec(uri: string, instance: any): ValidationResult {
     console.log("registry", uri, this.registry);
     console.log(this.registry.getIndex(0));
     console.log(this.registry.getIndex(1));
