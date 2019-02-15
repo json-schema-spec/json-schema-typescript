@@ -47,6 +47,23 @@ export default class Vm {
       }
     }
 
+    if (schema.if) {
+      const ifSchema = this.registry.getIndex(schema.if.schema);
+      const ifErrors = this.pseudoExec(ifSchema, instance);
+
+      if (!ifErrors && schema.then) {
+        const thenSchema = this.registry.getIndex(schema.then.schema);
+        this.stack.pushSchemaToken("then");
+        this.execSchema(thenSchema, instance);
+        this.stack.popSchemaToken();
+      } else if (ifErrors && schema.else) {
+        const elseSchema = this.registry.getIndex(schema.else.schema);
+        this.stack.pushSchemaToken("else");
+        this.execSchema(elseSchema, instance);
+        this.stack.popSchemaToken();
+      }
+    }
+
     if (instance === null) {
       if (schema.type && !schema.type.types.includes(JSONType.Null)) {
         this.stack.pushSchemaToken("type");

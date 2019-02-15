@@ -68,6 +68,9 @@ describe("Validator", () => {
         { $ref: 3.14 },
         { $id: 3.14 },
         { not: 3.14 },
+        { if: 3.14 },
+        { then: 3.14 },
+        { else: 3.14 },
       ];
 
       for (const schema of badSchemas) {

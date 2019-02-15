@@ -9,6 +9,9 @@ export default interface Schema {
   type?: SchemaType;
   items?: SchemaItems;
   not?: SchemaNot;
+  if?: SchemaIf;
+  then?: SchemaThen;
+  else?: SchemaElse;
 }
 
 export interface SchemaBool {
@@ -33,6 +36,18 @@ export interface SchemaItems {
 }
 
 export interface SchemaNot {
+  schema: number;
+}
+
+export interface SchemaIf {
+  schema: number;
+}
+
+export interface SchemaThen {
+  schema: number;
+}
+
+export interface SchemaElse {
   schema: number;
 }
 

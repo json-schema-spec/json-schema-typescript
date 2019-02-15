@@ -125,6 +125,33 @@ export default class Parser {
 
         schema.not = { schema: notSchema };
       }
+
+      const iff = (input as any).if;
+      if (iff !== undefined) {
+        this.push("if");
+        const iffSchema = this.parse(iff);
+        this.pop();
+
+        schema.if = { schema: iffSchema };
+      }
+
+      const then = (input as any).then;
+      if (then !== undefined) {
+        this.push("then");
+        const thenSchema = this.parse(then);
+        this.pop();
+
+        schema.then = { schema: thenSchema };
+      }
+
+      const elsee = (input as any).else;
+      if (elsee !== undefined) {
+        this.push("else");
+        const elseeSchema = this.parse(elsee);
+        this.pop();
+
+        schema.else = { schema: elseeSchema };
+      }
     } else {
       throw new InvalidSchemaError();
     }
