@@ -36,6 +36,17 @@ export default class Vm {
       this.stack.popSchema();
     }
 
+    if (schema.not) {
+      const notSchema = this.registry.getIndex(schema.not.schema);
+      const notErrors = this.pseudoExec(notSchema, instance);
+
+      if (!notErrors) {
+        this.stack.pushSchemaToken("not");
+        this.reportError();
+        this.stack.popSchemaToken();
+      }
+    }
+
     if (instance === null) {
       if (schema.type && !schema.type.types.includes(JSONType.Null)) {
         this.stack.pushSchemaToken("type");
@@ -107,6 +118,18 @@ export default class Vm {
     }
 
     return new ValidationResult(this.errors);
+  }
+
+  private pseudoExec(schema: Schema, instance: any): boolean {
+    const prevErrors = [...this.errors];
+    this.errors = [];
+
+    this.execSchema(schema, instance);
+
+    const hasErrors = this.errors.length > 0;
+    this.errors = prevErrors;
+
+    return hasErrors;
   }
 
   private reportError() {

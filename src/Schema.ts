@@ -8,6 +8,7 @@ export default interface Schema {
   ref?: SchemaRef;
   type?: SchemaType;
   items?: SchemaItems;
+  not?: SchemaNot;
 }
 
 export interface SchemaBool {
@@ -29,6 +30,10 @@ export interface SchemaType {
 export interface SchemaItems {
   single: boolean;
   schemas: number[];
+}
+
+export interface SchemaNot {
+  schema: number;
 }
 
 export enum JSONType {

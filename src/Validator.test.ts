@@ -67,6 +67,7 @@ describe("Validator", () => {
         { items: [{ type: "not-a-type" }] },
         { $ref: 3.14 },
         { $id: 3.14 },
+        { not: 3.14 },
       ];
 
       for (const schema of badSchemas) {

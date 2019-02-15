@@ -116,6 +116,15 @@ export default class Parser {
 
         this.pop();
       }
+
+      const not = (input as any).not;
+      if (not !== undefined) {
+        this.push("not");
+        const notSchema = this.parse(not);
+        this.pop();
+
+        schema.not = { schema: notSchema };
+      }
     } else {
       throw new InvalidSchemaError();
     }
