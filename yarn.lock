@@ -18,10 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@json-schema-spec/json-pointer@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@json-schema-spec/json-pointer/-/json-pointer-0.1.0.tgz#7396dbd067b49461163a71928a4fbc1bec1156fb"
-  integrity sha512-XeppucnmXDv71DWyunCyVueiQH1Rf6uW+R/OpNulCnRq/0kLMOD2iA+jVN2WH+jyZ7tNAqEFkWbsu6kv3iZj2g==
+"@json-schema-spec/json-pointer@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@json-schema-spec/json-pointer/-/json-pointer-0.1.2.tgz#5153d5d01b94134015ee829deca5a970cf0406fd"
+  integrity sha512-BYY7IavBjwsWWSmVcMz2A9mKiDD9RvacnsItgmy1xV8cmgbtxFfKmKMtkVpD7pYtkx4mIW4800yZBXueVFIWPw==
 
 "@types/events@*":
   version "3.0.0"

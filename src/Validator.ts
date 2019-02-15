@@ -45,7 +45,6 @@ export class Validator {
           undefinedURIs.push(baseURI);
         } else {
           const ptr = Ptr.parse(URI.parse(uri).fragment || "");
-
           const rawRefSchema = ptr.eval(rawSchema);
           Parser.parseSubSchema(registry, baseURI, ptr.tokens, rawRefSchema);
         }

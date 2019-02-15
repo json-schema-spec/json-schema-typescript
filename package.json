@@ -8,7 +8,7 @@
     "typescript": "^3.3.1"
   },
   "dependencies": {
-    "@json-schema-spec/json-pointer": "^0.1.0",
+    "@json-schema-spec/json-pointer": "^0.1.2",
     "tslint": "^5.12.1",
     "uri-js": "^4.2.2"
   },
