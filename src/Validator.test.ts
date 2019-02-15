@@ -55,6 +55,20 @@ describe("Validator", () => {
     }
   });
 
+  describe("validateURI", () => {
+    it("supports evaluating against a particular schema", () => {
+      const validator = new Validator([
+        { $id: "urn:foo", type: "boolean" },
+        { $id: "urn:bar", type: "number" },
+      ]);
+
+      expect(validator.validateURI("urn:foo", true).isValid()).toBe(true);
+      expect(validator.validateURI("urn:foo", 3.14).isValid()).toBe(false);
+      expect(validator.validateURI("urn:bar", true).isValid()).toBe(false);
+      expect(validator.validateURI("urn:bar", 3.14).isValid()).toBe(true);
+    });
+  });
+
   describe("invalid schemas", () => {
     it("throws InvalidSchemaError on bad schemas", () => {
       const badSchemas = [

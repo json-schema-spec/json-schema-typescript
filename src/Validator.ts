@@ -64,7 +64,11 @@ export class Validator {
   }
 
   public validate(instance: any): ValidationResult {
+    return this.validateURI("", instance);
+  }
+
+  public validateURI(uri: string, instance: any): ValidationResult {
     const vm = new Vm(this.registry, this.maxStackDepth);
-    return vm.exec("", instance);
+    return vm.exec(uri, instance);
   }
 }
