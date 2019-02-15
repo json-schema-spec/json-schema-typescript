@@ -76,7 +76,7 @@ describe("Validator", () => {
     });
 
     it("throws MissingURIsError on missing uris", () => {
-      expect(() => {
+      try {
         // tslint:disable-next-line no-unused-expression
         new Validator([{
           $ref: "http://example.com/1",
@@ -86,7 +86,17 @@ describe("Validator", () => {
             { $ref: "http://example.com/4#/fragment" },
           ],
         }]);
-      }).toThrow(new MissingURIsError([]));
+
+        fail();
+      } catch (err) {
+        const missingURIs = (err as MissingURIsError).uris;
+        expect(missingURIs).toEqual([
+          "http://example.com/2",
+          "http://example.com/3",
+          "http://example.com/4",
+          "http://example.com/1",
+        ]);
+      }
     });
   });
 });
