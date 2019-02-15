@@ -5,6 +5,7 @@ import Parser from "./Parser";
 import Registry from "./Registry";
 import { ValidationResult } from "./ValidationResult";
 import Vm from "./Vm";
+import MissingURIsError from "./MissingURIsError";
 
 export interface ValidatorConfig {
   maxErrors: number;
@@ -54,7 +55,7 @@ export class Validator {
     }
 
     if (undefinedURIs.length > 0) {
-      throw new Error(`undefined uris ${undefinedURIs}`);
+      throw new MissingURIsError(undefinedURIs);
     }
 
     this.registry = registry;

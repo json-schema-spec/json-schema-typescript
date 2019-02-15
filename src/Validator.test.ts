@@ -3,6 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 
 import InvalidSchemaError from "./InvalidSchemaError";
+import MissingURIsError from "./MissingURIsError";
 import { Validator } from "./Validator";
 
 const TEST_DIR = path.join(__dirname, "../tests");
@@ -64,11 +65,27 @@ describe("Validator", () => {
         { items: { type: "not-a-type" } },
         { items: ["not-a-schema"] },
         { items: [{ type: "not-a-type" }] },
+        { $ref: 3.14 },
+        { $id: 3.14 },
       ];
 
       for (const schema of badSchemas) {
         expect(() => new Validator([schema])).toThrow(InvalidSchemaError);
       }
+    });
+
+    it("throws MissingURIsError on missing uris", () => {
+      expect(() => {
+        // tslint:disable-next-line no-unused-expression
+        new Validator([{
+          $ref: "http://example.com/1",
+          items: [
+            { $ref: "http://example.com/2" },
+            { $ref: "http://example.com/3" },
+            { $ref: "http://example.com/4#/fragment" },
+          ],
+        }]);
+      }).toThrow(new MissingURIsError([]));
     });
   });
 });
