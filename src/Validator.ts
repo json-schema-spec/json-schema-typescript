@@ -1,11 +1,11 @@
 import Ptr from "@json-schema-spec/json-pointer";
 import * as URI from "uri-js";
 
+import MissingURIsError from "./MissingURIsError";
 import Parser from "./Parser";
 import Registry from "./Registry";
 import { ValidationResult } from "./ValidationResult";
 import Vm from "./Vm";
-import MissingURIsError from "./MissingURIsError";
 
 export interface ValidatorConfig {
   maxErrors: number;
