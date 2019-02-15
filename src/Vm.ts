@@ -1,17 +1,20 @@
 import Registry from "./Registry";
 import Schema, { JSONType } from "./Schema";
 import Stack from "./Stack";
+import StackOverflowError from "./StackOverflowError";
 import { ValidationError, ValidationResult } from "./ValidationResult";
 
 export default class Vm {
   private registry: Registry;
   private stack: Stack;
   private errors: ValidationError[];
+  private maxStackDepth: number;
 
-  constructor(registry: Registry) {
+  constructor(registry: Registry, maxStackDepth: number) {
     this.registry = registry;
     this.stack = new Stack();
     this.errors = [];
+    this.maxStackDepth = maxStackDepth;
   }
 
   public exec(uri: string, instance: any): ValidationResult {
@@ -31,6 +34,10 @@ export default class Vm {
     }
 
     if (schema.ref) {
+      if (this.stack.schemaDepth() === this.maxStackDepth) {
+        throw new StackOverflowError();
+      }
+
       this.stack.pushSchema(schema.ref.baseURI, [...schema.ref.ptr.tokens]);
       this.execSchema(this.registry.getIndex(schema.ref.schema), instance);
       this.stack.popSchema();

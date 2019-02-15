@@ -11,6 +11,10 @@ export default class Stack {
     this.schemas = [];
   }
 
+  public schemaDepth(): number {
+    return this.schemas.length;
+  }
+
   public pushInstanceToken(token: string) {
     this.instance.push(token);
   }

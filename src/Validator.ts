@@ -8,23 +8,25 @@ import { ValidationResult } from "./ValidationResult";
 import Vm from "./Vm";
 
 export interface ValidatorConfig {
-  maxErrors: number;
-  maxStackDepth: number;
+  maxErrors?: number;
+  maxStackDepth?: number;
 }
 
 const DEFAULT_MAX_ERRORS = 0;
-const DEFAULT_MAX_STACK_DEPTH = 0;
+const DEFAULT_MAX_STACK_DEPTH = 128;
 
 export class Validator {
-  private config: ValidatorConfig;
+  private maxStackDepth: number;
   private registry: Registry;
 
   constructor(schemas: any[], config?: ValidatorConfig) {
-    this.config = {
+    const concreteConfig = {
       ...config,
       maxErrors: DEFAULT_MAX_ERRORS,
       maxStackDepth: DEFAULT_MAX_STACK_DEPTH,
     };
+
+    this.maxStackDepth = concreteConfig.maxStackDepth;
 
     const registry = new Registry();
     const rawSchemas = new Map<string, any>();
@@ -61,8 +63,8 @@ export class Validator {
     this.registry = registry;
   }
 
-  public validate(instance: object): ValidationResult {
-    const vm = new Vm(this.registry);
+  public validate(instance: any): ValidationResult {
+    const vm = new Vm(this.registry, this.maxStackDepth);
     return vm.exec("", instance);
   }
 }

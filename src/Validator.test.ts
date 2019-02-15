@@ -4,6 +4,7 @@ import * as path from "path";
 
 import InvalidSchemaError from "./InvalidSchemaError";
 import MissingURIsError from "./MissingURIsError";
+import StackOverflowError from "./StackOverflowError";
 import { Validator } from "./Validator";
 
 const TEST_DIR = path.join(__dirname, "../tests");
@@ -100,6 +101,17 @@ describe("Validator", () => {
           "http://example.com/1",
         ]);
       }
+    });
+
+    it("throws StackOverflowError on circularly defined schemas", () => {
+      const validator = new Validator(
+        [{ $ref: "#" }],
+        { maxStackDepth: 16 },
+      );
+
+      expect(() => {
+        validator.validate(null);
+      }).toThrowError(new StackOverflowError());
     });
   });
 });
