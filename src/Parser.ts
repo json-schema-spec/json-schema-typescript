@@ -184,6 +184,16 @@ export default class Parser {
           throw new InvalidSchemaError();
         }
       }
+
+      const minimum = (input as any).minimum;
+      if (minimum !== undefined) {
+        if (typeof minimum === "number") {
+          schema.minimum = { value: minimum };
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
+
     } else {
       throw new InvalidSchemaError();
     }

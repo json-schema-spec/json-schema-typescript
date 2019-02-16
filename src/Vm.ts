@@ -138,6 +138,14 @@ export default class Vm {
           this.stack.popSchemaToken();
         }
       }
+
+      if (schema.minimum) {
+        if (instance < schema.minimum.value) {
+          this.stack.pushSchemaToken("minimum");
+          this.reportError();
+          this.stack.popSchemaToken();
+        }
+      }
     } else if (typeof instance === "string") {
       if (schema.type && !schema.type.types.includes(JSONType.String)) {
         this.stack.pushSchemaToken("type");

@@ -89,6 +89,7 @@ describe("Validator", () => {
         { enum: 3.14 },
         { multipleOf: "not-a-number" },
         { maximum: "not-a-number" },
+        { minimum: "not-a-number" },
       ];
 
       for (const schema of badSchemas) {
