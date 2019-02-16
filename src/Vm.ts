@@ -130,6 +130,14 @@ export default class Vm {
           this.stack.popSchemaToken();
         }
       }
+
+      if (schema.maximum) {
+        if (instance > schema.maximum.value) {
+          this.stack.pushSchemaToken("maximum");
+          this.reportError();
+          this.stack.popSchemaToken();
+        }
+      }
     } else if (typeof instance === "string") {
       if (schema.type && !schema.type.types.includes(JSONType.String)) {
         this.stack.pushSchemaToken("type");

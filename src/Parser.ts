@@ -175,6 +175,15 @@ export default class Parser {
           throw new InvalidSchemaError();
         }
       }
+
+      const maximum = (input as any).maximum;
+      if (maximum !== undefined) {
+        if (typeof maximum === "number") {
+          schema.maximum = { value: maximum };
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
     } else {
       throw new InvalidSchemaError();
     }

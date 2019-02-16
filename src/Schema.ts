@@ -15,6 +15,7 @@ export default interface Schema {
   const?: SchemaConst;
   enum?: SchemaEnum;
   multipleOf?: SchemaMultipleOf;
+  maximum?: SchemaMaximum;
 }
 
 export interface SchemaBool {
@@ -63,6 +64,10 @@ export interface SchemaEnum {
 }
 
 export interface SchemaMultipleOf {
+  value: number;
+}
+
+export interface SchemaMaximum {
   value: number;
 }
 
