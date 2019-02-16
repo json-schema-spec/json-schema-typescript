@@ -86,6 +86,7 @@ describe("Validator", () => {
         { if: 3.14 },
         { then: 3.14 },
         { else: 3.14 },
+        { enum: 3.14 },
       ];
 
       for (const schema of badSchemas) {

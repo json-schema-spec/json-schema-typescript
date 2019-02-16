@@ -157,6 +157,15 @@ export default class Parser {
       if (constt !== undefined) {
         schema.const = { value: constt };
       }
+
+      const enumm = (input as any).enum;
+      if (enumm !== undefined) {
+        if (Array.isArray(enumm)) {
+          schema.enum = { values: enumm };
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
     } else {
       throw new InvalidSchemaError();
     }

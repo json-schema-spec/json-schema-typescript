@@ -81,6 +81,22 @@ export default class Vm {
       }
     }
 
+    if (schema.enum) {
+      let enumOk = false;
+      for (const value of schema.enum.values) {
+        if (deepEqual(value, instance)) {
+          enumOk = true;
+          break;
+        }
+      }
+
+      if (!enumOk) {
+        this.stack.pushSchemaToken("enum");
+        this.reportError();
+        this.stack.popSchemaToken();
+      }
+    }
+
     if (instance === null) {
       if (schema.type && !schema.type.types.includes(JSONType.Null)) {
         this.stack.pushSchemaToken("type");

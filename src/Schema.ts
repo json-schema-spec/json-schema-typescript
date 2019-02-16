@@ -13,6 +13,7 @@ export default interface Schema {
   then?: SchemaThen;
   else?: SchemaElse;
   const?: SchemaConst;
+  enum?: SchemaEnum;
 }
 
 export interface SchemaBool {
@@ -54,6 +55,10 @@ export interface SchemaElse {
 
 export interface SchemaConst {
   value: any;
+}
+
+export interface SchemaEnum {
+  values: any[];
 }
 
 export enum JSONType {
