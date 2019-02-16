@@ -12,6 +12,7 @@ export default interface Schema {
   if?: SchemaIf;
   then?: SchemaThen;
   else?: SchemaElse;
+  const?: SchemaConst;
 }
 
 export interface SchemaBool {
@@ -49,6 +50,10 @@ export interface SchemaThen {
 
 export interface SchemaElse {
   schema: number;
+}
+
+export interface SchemaConst {
+  value: any;
 }
 
 export enum JSONType {

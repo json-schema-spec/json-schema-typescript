@@ -152,6 +152,11 @@ export default class Parser {
 
         schema.else = { schema: elseeSchema };
       }
+
+      const constt = (input as any).const;
+      if (constt !== undefined) {
+        schema.const = { value: constt };
+      }
     } else {
       throw new InvalidSchemaError();
     }

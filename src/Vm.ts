@@ -4,6 +4,8 @@ import Stack from "./Stack";
 import StackOverflowError from "./StackOverflowError";
 import { ValidationError, ValidationResult } from "./ValidationResult";
 
+import deepEqual = require("deep-equal");
+
 export default class Vm {
   private registry: Registry;
   private stack: Stack;
@@ -67,6 +69,14 @@ export default class Vm {
         const elseSchema = this.registry.getIndex(schema.else.schema);
         this.stack.pushSchemaToken("else");
         this.execSchema(elseSchema, instance);
+        this.stack.popSchemaToken();
+      }
+    }
+
+    if (schema.const) {
+      if (!deepEqual(schema.const.value, instance)) {
+        this.stack.pushSchemaToken("const");
+        this.reportError();
         this.stack.popSchemaToken();
       }
     }
