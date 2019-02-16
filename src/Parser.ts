@@ -194,6 +194,23 @@ export default class Parser {
         }
       }
 
+      const exclusiveMaximum = (input as any).exclusiveMaximum;
+      if (exclusiveMaximum !== undefined) {
+        if (typeof exclusiveMaximum === "number") {
+          schema.exclusiveMaximum = { value: exclusiveMaximum };
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
+
+      const exclusiveMinimum = (input as any).exclusiveMinimum;
+      if (exclusiveMinimum !== undefined) {
+        if (typeof exclusiveMinimum === "number") {
+          schema.exclusiveMinimum = { value: exclusiveMinimum };
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
     } else {
       throw new InvalidSchemaError();
     }

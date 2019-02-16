@@ -146,6 +146,22 @@ export default class Vm {
           this.stack.popSchemaToken();
         }
       }
+
+      if (schema.exclusiveMaximum) {
+        if (instance >= schema.exclusiveMaximum.value) {
+          this.stack.pushSchemaToken("exclusiveMaximum");
+          this.reportError();
+          this.stack.popSchemaToken();
+        }
+      }
+
+      if (schema.exclusiveMinimum) {
+        if (instance <= schema.exclusiveMinimum.value) {
+          this.stack.pushSchemaToken("exclusiveMinimum");
+          this.reportError();
+          this.stack.popSchemaToken();
+        }
+      }
     } else if (typeof instance === "string") {
       if (schema.type && !schema.type.types.includes(JSONType.String)) {
         this.stack.pushSchemaToken("type");

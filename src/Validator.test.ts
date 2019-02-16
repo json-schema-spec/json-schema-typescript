@@ -90,6 +90,8 @@ describe("Validator", () => {
         { multipleOf: "not-a-number" },
         { maximum: "not-a-number" },
         { minimum: "not-a-number" },
+        { exclusiveMaximum: "not-a-number" },
+        { exclusiveMinimum: "not-a-number" },
       ];
 
       for (const schema of badSchemas) {

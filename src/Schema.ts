@@ -17,6 +17,8 @@ export default interface Schema {
   multipleOf?: SchemaMultipleOf;
   maximum?: SchemaMaximum;
   minimum?: SchemaMinimum;
+  exclusiveMaximum?: SchemaExclusiveMaximum;
+  exclusiveMinimum?: SchemaExclusiveMinimum;
 }
 
 export interface SchemaBool {
@@ -73,6 +75,14 @@ export interface SchemaMaximum {
 }
 
 export interface SchemaMinimum {
+  value: number;
+}
+
+export interface SchemaExclusiveMaximum {
+  value: number;
+}
+
+export interface SchemaExclusiveMinimum {
   value: number;
 }
 
