@@ -6,6 +6,8 @@ import { ValidationError, ValidationResult } from "./ValidationResult";
 
 import deepEqual = require("deep-equal");
 
+export let EPSILON = 0.001;
+
 export default class Vm {
   private registry: Registry;
   private stack: Stack;
@@ -119,6 +121,14 @@ export default class Vm {
         this.stack.pushSchemaToken("type");
         this.reportError();
         this.stack.popSchemaToken();
+      }
+
+      if (schema.multipleOf) {
+        if (Math.abs(instance % schema.multipleOf.value) > EPSILON) {
+          this.stack.pushSchemaToken("multipleOf");
+          this.reportError();
+          this.stack.popSchemaToken();
+        }
       }
     } else if (typeof instance === "string") {
       if (schema.type && !schema.type.types.includes(JSONType.String)) {

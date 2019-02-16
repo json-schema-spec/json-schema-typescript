@@ -14,6 +14,7 @@ export default interface Schema {
   else?: SchemaElse;
   const?: SchemaConst;
   enum?: SchemaEnum;
+  multipleOf?: SchemaMultipleOf;
 }
 
 export interface SchemaBool {
@@ -59,6 +60,10 @@ export interface SchemaConst {
 
 export interface SchemaEnum {
   values: any[];
+}
+
+export interface SchemaMultipleOf {
+  value: number;
 }
 
 export enum JSONType {

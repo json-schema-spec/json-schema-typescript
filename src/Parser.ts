@@ -166,6 +166,15 @@ export default class Parser {
           throw new InvalidSchemaError();
         }
       }
+
+      const multipleOf = (input as any).multipleOf;
+      if (multipleOf !== undefined) {
+        if (typeof multipleOf === "number") {
+          schema.multipleOf = { value: multipleOf };
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
     } else {
       throw new InvalidSchemaError();
     }
