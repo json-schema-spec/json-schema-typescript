@@ -23,6 +23,8 @@ export default interface Schema {
   pattern?: SchemaPattern;
   items?: SchemaItems;
   additionalItems?: SchemaAdditionalItems;
+  maxItems?: SchemaMaxItems;
+  minItems?: SchemaMinItems;
 }
 
 export interface SchemaBool {
@@ -104,6 +106,14 @@ export interface SchemaPattern {
 
 export interface SchemaAdditionalItems {
   schema: number;
+}
+
+export interface SchemaMaxItems {
+  value: number;
+}
+
+export interface SchemaMinItems {
+  value: number;
 }
 
 export enum JSONType {

@@ -244,6 +244,22 @@ export default class Vm {
           }
         }
       }
+
+      if (schema.maxItems) {
+        if (instance.length > schema.maxItems.value) {
+          this.stack.pushSchemaToken("maxItems");
+          this.reportError();
+          this.stack.popSchemaToken();
+        }
+      }
+
+      if (schema.minItems) {
+        if (instance.length < schema.minItems.value) {
+          this.stack.pushSchemaToken("minItems");
+          this.reportError();
+          this.stack.popSchemaToken();
+        }
+      }
     } else {
       if (schema.type && !schema.type.types.includes(JSONType.Object)) {
         this.stack.pushSchemaToken("type");

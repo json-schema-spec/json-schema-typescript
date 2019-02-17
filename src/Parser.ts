@@ -259,6 +259,32 @@ export default class Parser {
 
         schema.additionalItems = { schema: additionalItemsSchema };
       }
+
+      const maxItems = (input as any).maxItems;
+      if (maxItems !== undefined) {
+        if (typeof maxItems === "number") {
+          if (Number.isInteger(maxItems)) {
+            schema.maxItems = { value: maxItems };
+          } else {
+            throw new InvalidSchemaError();
+          }
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
+
+      const minItems = (input as any).minItems;
+      if (minItems !== undefined) {
+        if (typeof minItems === "number") {
+          if (Number.isInteger(minItems)) {
+            schema.minItems = { value: minItems };
+          } else {
+            throw new InvalidSchemaError();
+          }
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
     } else {
       throw new InvalidSchemaError();
     }
