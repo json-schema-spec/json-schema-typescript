@@ -329,6 +329,24 @@ export default class Parser {
           throw new InvalidSchemaError();
         }
       }
+
+      const required = (input as any).required;
+      if (required !== undefined) {
+        if (Array.isArray(required)) {
+          const properties = [];
+          for (const property of required) {
+            if (typeof property === "string") {
+              properties.push(property);
+            } else {
+              throw new InvalidSchemaError();
+            }
+          }
+
+          schema.required = { properties };
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
     } else {
       throw new InvalidSchemaError();
     }

@@ -109,6 +109,8 @@ describe("Validator", () => {
         { maxProperties: 3.14 },
         { minProperties: "not-a-number" },
         { minProperties: 3.14 },
+        { required: "not-an-array" },
+        { required: [3.14] },
       ];
 
       for (const schema of badSchemas) {

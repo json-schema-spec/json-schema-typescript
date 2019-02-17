@@ -320,6 +320,18 @@ export default class Vm {
           this.stack.popSchemaToken();
         }
       }
+
+      if (schema.required) {
+        this.stack.pushSchemaToken("required");
+        for (const [index, property] of schema.required.properties.entries()) {
+          if (!instance.hasOwnProperty(property)) {
+            this.stack.pushSchemaToken(index.toString());
+            this.reportError();
+            this.stack.popSchemaToken();
+          }
+        }
+        this.stack.popSchemaToken();
+      }
     }
 
     return new ValidationResult(this.errors);
