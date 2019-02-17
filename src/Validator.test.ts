@@ -103,6 +103,7 @@ describe("Validator", () => {
         { maxItems: 3.14 },
         { minItems: "not-a-number" },
         { minItems: 3.14 },
+        { uniqueItems: "not-a-boolean" },
       ];
 
       for (const schema of badSchemas) {

@@ -260,6 +260,26 @@ export default class Vm {
           this.stack.popSchemaToken();
         }
       }
+
+      if (schema.uniqueItems && schema.uniqueItems.value) {
+        let uniqueOk = true;
+
+        loop:
+        for (let i = 0; i < instance.length; i++) {
+          for (let j = i + 1; j < instance.length; j++) {
+            if (deepEqual(instance[i], instance[j])) {
+              uniqueOk = false;
+              break loop;
+            }
+          }
+        }
+
+        if (!uniqueOk) {
+          this.stack.pushSchemaToken("uniqueItems");
+          this.reportError();
+          this.stack.popSchemaToken();
+        }
+      }
     } else {
       if (schema.type && !schema.type.types.includes(JSONType.Object)) {
         this.stack.pushSchemaToken("type");

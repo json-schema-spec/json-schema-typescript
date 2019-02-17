@@ -285,6 +285,15 @@ export default class Parser {
           throw new InvalidSchemaError();
         }
       }
+
+      const uniqueItems = (input as any).uniqueItems;
+      if (uniqueItems !== undefined) {
+        if (typeof uniqueItems === "boolean") {
+          schema.uniqueItems = { value: uniqueItems };
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
     } else {
       throw new InvalidSchemaError();
     }
