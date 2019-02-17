@@ -211,6 +211,32 @@ export default class Parser {
           throw new InvalidSchemaError();
         }
       }
+
+      const maxLength = (input as any).maxLength;
+      if (maxLength !== undefined) {
+        if (typeof maxLength === "number") {
+          if (Number.isInteger(maxLength)) {
+            schema.maxLength = { value: maxLength };
+          } else {
+            throw new InvalidSchemaError();
+          }
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
+
+      const minLength = (input as any).minLength;
+      if (minLength !== undefined) {
+        if (typeof minLength === "number") {
+          if (Number.isInteger(minLength)) {
+            schema.minLength = { value: minLength };
+          } else {
+            throw new InvalidSchemaError();
+          }
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
     } else {
       throw new InvalidSchemaError();
     }

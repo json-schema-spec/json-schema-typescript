@@ -19,6 +19,8 @@ export default interface Schema {
   minimum?: SchemaMinimum;
   exclusiveMaximum?: SchemaExclusiveMaximum;
   exclusiveMinimum?: SchemaExclusiveMinimum;
+  maxLength?: SchemaMaxLength;
+  minLength?: SchemaMinLength;
 }
 
 export interface SchemaBool {
@@ -83,6 +85,14 @@ export interface SchemaExclusiveMaximum {
 }
 
 export interface SchemaExclusiveMinimum {
+  value: number;
+}
+
+export interface SchemaMaxLength {
+  value: number;
+}
+
+export interface SchemaMinLength {
   value: number;
 }
 

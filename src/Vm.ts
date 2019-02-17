@@ -168,6 +168,22 @@ export default class Vm {
         this.reportError();
         this.stack.popSchemaToken();
       }
+
+      if (schema.maxLength) {
+        if ([...instance].length > schema.maxLength.value) {
+          this.stack.pushSchemaToken("maxLength");
+          this.reportError();
+          this.stack.popSchemaToken();
+        }
+      }
+
+      if (schema.minLength) {
+        if ([...instance].length < schema.minLength.value) {
+          this.stack.pushSchemaToken("minLength");
+          this.reportError();
+          this.stack.popSchemaToken();
+        }
+      }
     } else if (Array.isArray(instance)) {
       if (schema.type && !schema.type.types.includes(JSONType.Array)) {
         this.stack.pushSchemaToken("type");
