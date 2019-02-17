@@ -22,31 +22,29 @@ describe("Validator", () => {
               it(index.toString(), () => {
                 const schemas = [...registry, schema];
                 const validator = new Validator(schemas);
-
-                const expectedPaths = errors.map((error: any) => {
-                  return {
-                    instancePath: Ptr.parse(error.instancePath),
-                    schemaPath: Ptr.parse(error.schemaPath),
-                  };
-                });
-
-                const expectedURIs = errors.map((error: any) => {
-                  return error.uri ? error.uri : "";
-                });
-
                 const result = validator.validate(instance);
 
-                const actualPaths = result.errors.map((error) => {
-                  return {
-                    instancePath: error.instancePath,
-                    schemaPath: error.schemaPath,
-                  };
-                });
+                const sortFn = (a: any, b: any) => {
+                  if (a.schemaPath === b.schemaPath) {
+                    return a.instancePath < b.instancePath ? -1 : 1;
+                  }
 
-                expect(actualPaths).toEqual(expectedPaths);
-                for (let i = 0; i < result.errors.length; i++) {
-                  expect(result.errors[i].schemaURI).toEqual(expectedURIs[i]);
+                  return a.schemaPath < b.schemaPath ? -1 : 1;
                 }
+
+                const expected = errors.map((error: any) => {
+                  return { uri: error.uri || "", ...error };
+                }).sort(sortFn);
+
+                const actual = result.errors.map((error) => {
+                  return {
+                    instancePath: error.instancePath.toString(),
+                    schemaPath: error.schemaPath.toString(),
+                    uri: error.schemaURI,
+                  };
+                }).sort(sortFn);
+
+                expect(actual).toEqual(expected);
               });
             }
           });
@@ -111,6 +109,8 @@ describe("Validator", () => {
         { minProperties: 3.14 },
         { required: "not-an-array" },
         { required: [3.14] },
+        { properties: "not-an-object" },
+        { properties: { foo: "not-a-schema" } },
       ];
 
       for (const schema of badSchemas) {

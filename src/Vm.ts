@@ -332,6 +332,23 @@ export default class Vm {
         }
         this.stack.popSchemaToken();
       }
+
+      for (const [key, value] of Object.entries(instance)) {
+        if (schema.properties) {
+          if (schema.properties.schemas.has(key)) {
+            const schemaIndex = schema.properties.schemas.get(key)!;
+            const propertySchema = this.registry.getIndex(schemaIndex);
+
+            this.stack.pushSchemaToken("properties");
+            this.stack.pushSchemaToken(key);
+            this.stack.pushInstanceToken(key);
+            this.execSchema(propertySchema, value);
+            this.stack.popInstanceToken();
+            this.stack.popSchemaToken();
+            this.stack.popSchemaToken();
+          }
+        }
+      }
     }
 
     return new ValidationResult(this.errors);

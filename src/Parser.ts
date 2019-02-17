@@ -333,16 +333,35 @@ export default class Parser {
       const required = (input as any).required;
       if (required !== undefined) {
         if (Array.isArray(required)) {
-          const properties = [];
+          const requiredProperties = [];
           for (const property of required) {
             if (typeof property === "string") {
-              properties.push(property);
+              requiredProperties.push(property);
             } else {
               throw new InvalidSchemaError();
             }
           }
 
-          schema.required = { properties };
+          schema.required = { properties: requiredProperties };
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
+
+      const properties = (input as any).properties;
+      if (properties !== undefined) {
+        if (typeof properties === "object") {
+          const schemas = new Map();
+
+          this.push("properties");
+          for (const [key, value] of Object.entries(properties)) {
+            this.push(key);
+            schemas.set(key, this.parse(value));
+            this.pop();
+          }
+          this.pop();
+
+          schema.properties = { schemas };
         } else {
           throw new InvalidSchemaError();
         }
