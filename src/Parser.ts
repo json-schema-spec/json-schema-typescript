@@ -366,6 +366,29 @@ export default class Parser {
           throw new InvalidSchemaError();
         }
       }
+
+      const patternProperties = (input as any).patternProperties;
+      if (patternProperties !== undefined) {
+        if (typeof patternProperties === "object") {
+          const schemas = new Map();
+
+          this.push("patternProperties");
+          for (const [key, value] of Object.entries(patternProperties)) {
+            this.push(key);
+            try {
+              schemas.set([new RegExp(key), key], this.parse(value));
+            } catch (err) {
+              throw new InvalidSchemaError();
+            }
+            this.pop();
+          }
+          this.pop();
+
+          schema.patternProperties = { schemas };
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
     } else {
       throw new InvalidSchemaError();
     }

@@ -335,18 +335,35 @@ export default class Vm {
 
       for (const [key, value] of Object.entries(instance)) {
         if (schema.properties) {
+          this.stack.pushSchemaToken("properties");
           if (schema.properties.schemas.has(key)) {
             const schemaIndex = schema.properties.schemas.get(key)!;
             const propertySchema = this.registry.getIndex(schemaIndex);
 
-            this.stack.pushSchemaToken("properties");
             this.stack.pushSchemaToken(key);
             this.stack.pushInstanceToken(key);
             this.execSchema(propertySchema, value);
             this.stack.popInstanceToken();
             this.stack.popSchemaToken();
-            this.stack.popSchemaToken();
           }
+          this.stack.popSchemaToken();
+        }
+
+        if (schema.patternProperties) {
+          this.stack.pushSchemaToken("patternProperties");
+          const entries = schema.patternProperties.schemas.entries();
+          for (const [[pattern, patternName], schemaIndex] of entries) {
+            const propertySchema = this.registry.getIndex(schemaIndex);
+
+            if (pattern.test(key)) {
+              this.stack.pushSchemaToken(patternName);
+              this.stack.pushInstanceToken(key);
+              this.execSchema(propertySchema, value);
+              this.stack.popInstanceToken();
+              this.stack.popSchemaToken();
+            }
+          }
+          this.stack.popSchemaToken();
         }
       }
     }
