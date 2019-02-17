@@ -32,6 +32,7 @@ export default interface Schema {
   required?: SchemaRequired;
   properties?: SchemaProperties;
   patternProperties?: SchemaPatternProperties;
+  additionalProperties?: SchemaAdditionalProperties;
 }
 
 export interface SchemaBool {
@@ -149,6 +150,10 @@ export interface SchemaProperties {
 
 export interface SchemaPatternProperties {
   schemas: Map<[RegExp, string], number>;
+}
+
+export interface SchemaAdditionalProperties {
+  schema: number;
 }
 
 export enum JSONType {

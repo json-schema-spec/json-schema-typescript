@@ -389,6 +389,15 @@ export default class Parser {
           throw new InvalidSchemaError();
         }
       }
+
+      const additionalProperties = (input as any).additionalProperties;
+      if (additionalProperties !== undefined) {
+        this.push("additionalProperties");
+        const additionalPropertiesSchema = this.parse(additionalProperties);
+        this.pop();
+
+        schema.additionalProperties = { schema: additionalPropertiesSchema };
+      }
     } else {
       throw new InvalidSchemaError();
     }

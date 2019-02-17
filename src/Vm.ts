@@ -334,6 +334,8 @@ export default class Vm {
       }
 
       for (const [key, value] of Object.entries(instance)) {
+        let isAdditional = true;
+
         if (schema.properties) {
           this.stack.pushSchemaToken("properties");
           if (schema.properties.schemas.has(key)) {
@@ -345,6 +347,8 @@ export default class Vm {
             this.execSchema(propertySchema, value);
             this.stack.popInstanceToken();
             this.stack.popSchemaToken();
+
+            isAdditional = false;
           }
           this.stack.popSchemaToken();
         }
@@ -361,8 +365,20 @@ export default class Vm {
               this.execSchema(propertySchema, value);
               this.stack.popInstanceToken();
               this.stack.popSchemaToken();
+
+              isAdditional = false;
             }
           }
+          this.stack.popSchemaToken();
+        }
+
+        if (schema.additionalProperties && isAdditional) {
+          const propertySchema = this.registry.getIndex(schema.additionalProperties.schema);
+
+          this.stack.pushSchemaToken("additionalProperties");
+          this.stack.pushInstanceToken(key);
+          this.execSchema(propertySchema, value);
+          this.stack.popInstanceToken();
           this.stack.popSchemaToken();
         }
       }
