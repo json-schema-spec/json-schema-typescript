@@ -27,6 +27,8 @@ export default interface Schema {
   minItems?: SchemaMinItems;
   uniqueItems?: SchemaUniqueItems;
   contains?: SchemaContains;
+  maxProperties?: SchemaMaxProperties;
+  minProperties?: SchemaMinProperties;
 }
 
 export interface SchemaBool {
@@ -124,6 +126,14 @@ export interface SchemaUniqueItems {
 
 export interface SchemaContains {
   schema: number;
+}
+
+export interface SchemaMaxProperties {
+  value: number;
+}
+
+export interface SchemaMinProperties {
+  value: number;
 }
 
 export enum JSONType {

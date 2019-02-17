@@ -303,6 +303,32 @@ export default class Parser {
 
         schema.contains = { schema: containsSchema };
       }
+
+      const maxProperties = (input as any).maxProperties;
+      if (maxProperties !== undefined) {
+        if (typeof maxProperties === "number") {
+          if (Number.isInteger(maxProperties)) {
+            schema.maxProperties = { value: maxProperties };
+          } else {
+            throw new InvalidSchemaError();
+          }
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
+
+      const minProperties = (input as any).minProperties;
+      if (minProperties !== undefined) {
+        if (typeof minProperties === "number") {
+          if (Number.isInteger(minProperties)) {
+            schema.minProperties = { value: minProperties };
+          } else {
+            throw new InvalidSchemaError();
+          }
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
     } else {
       throw new InvalidSchemaError();
     }

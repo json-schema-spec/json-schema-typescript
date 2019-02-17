@@ -304,6 +304,22 @@ export default class Vm {
         this.reportError();
         this.stack.popSchemaToken();
       }
+
+      if (schema.maxProperties) {
+        if (Object.keys(instance).length > schema.maxProperties.value) {
+          this.stack.pushSchemaToken("maxProperties");
+          this.reportError();
+          this.stack.popSchemaToken();
+        }
+      }
+
+      if (schema.minProperties) {
+        if (Object.keys(instance).length < schema.minProperties.value) {
+          this.stack.pushSchemaToken("minProperties");
+          this.reportError();
+          this.stack.popSchemaToken();
+        }
+      }
     }
 
     return new ValidationResult(this.errors);
