@@ -230,6 +230,18 @@ export default class Vm {
             this.stack.popInstanceToken();
           }
           this.stack.popSchemaToken();
+
+          if (schema.additionalItems) {
+            const itemSchema = this.registry.getIndex(schema.additionalItems.schema);
+
+            this.stack.pushSchemaToken("additionalItems");
+            for (let i = schema.items.schemas.length; i < instance.length; i++) {
+              this.stack.pushInstanceToken(i.toString());
+              this.execSchema(itemSchema, instance[i]);
+              this.stack.popInstanceToken();
+            }
+            this.stack.popSchemaToken();
+          }
         }
       }
     } else {

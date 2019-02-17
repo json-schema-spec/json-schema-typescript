@@ -7,7 +7,6 @@ export default interface Schema {
   bool?: SchemaBool;
   ref?: SchemaRef;
   type?: SchemaType;
-  items?: SchemaItems;
   not?: SchemaNot;
   if?: SchemaIf;
   then?: SchemaThen;
@@ -22,6 +21,8 @@ export default interface Schema {
   maxLength?: SchemaMaxLength;
   minLength?: SchemaMinLength;
   pattern?: SchemaPattern;
+  items?: SchemaItems;
+  additionalItems?: SchemaAdditionalItems;
 }
 
 export interface SchemaBool {
@@ -99,6 +100,10 @@ export interface SchemaMinLength {
 
 export interface SchemaPattern {
   value: RegExp;
+}
+
+export interface SchemaAdditionalItems {
+  schema: number;
 }
 
 export enum JSONType {

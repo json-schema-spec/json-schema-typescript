@@ -98,6 +98,7 @@ describe("Validator", () => {
         { minLength: 3.14 },
         { pattern: 3.14 },
         { pattern: "[[[" },
+        { additionalItems: "not-a-schema" },
       ];
 
       for (const schema of badSchemas) {

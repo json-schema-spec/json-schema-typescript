@@ -250,6 +250,15 @@ export default class Parser {
           throw new InvalidSchemaError();
         }
       }
+
+      const additionalItems = (input as any).additionalItems;
+      if (additionalItems !== undefined) {
+        this.push("additionalItems");
+        const additionalItemsSchema = this.parse(additionalItems);
+        this.pop();
+
+        schema.additionalItems = { schema: additionalItemsSchema };
+      }
     } else {
       throw new InvalidSchemaError();
     }
