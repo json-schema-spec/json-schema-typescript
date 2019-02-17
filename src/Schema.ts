@@ -21,6 +21,7 @@ export default interface Schema {
   exclusiveMinimum?: SchemaExclusiveMinimum;
   maxLength?: SchemaMaxLength;
   minLength?: SchemaMinLength;
+  pattern?: SchemaPattern;
 }
 
 export interface SchemaBool {
@@ -94,6 +95,10 @@ export interface SchemaMaxLength {
 
 export interface SchemaMinLength {
   value: number;
+}
+
+export interface SchemaPattern {
+  value: RegExp;
 }
 
 export enum JSONType {

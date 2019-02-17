@@ -237,6 +237,19 @@ export default class Parser {
           throw new InvalidSchemaError();
         }
       }
+
+      const pattern = (input as any).pattern;
+      if (pattern !== undefined) {
+        if (typeof pattern === "string") {
+          try {
+            schema.pattern = { value: new RegExp(pattern) };
+          } catch {
+            throw new InvalidSchemaError();
+          }
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
     } else {
       throw new InvalidSchemaError();
     }

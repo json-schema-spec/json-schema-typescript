@@ -191,6 +191,14 @@ export default class Vm {
           this.stack.popSchemaToken();
         }
       }
+
+      if (schema.pattern) {
+        if (!schema.pattern.value.test(instance)) {
+          this.stack.pushSchemaToken("pattern");
+          this.reportError();
+          this.stack.popSchemaToken();
+        }
+      }
     } else if (Array.isArray(instance)) {
       if (schema.type && !schema.type.types.includes(JSONType.Array)) {
         this.stack.pushSchemaToken("type");

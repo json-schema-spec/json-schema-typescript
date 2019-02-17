@@ -96,6 +96,8 @@ describe("Validator", () => {
         { maxLength: 3.14 },
         { minLength: "not-a-number" },
         { minLength: 3.14 },
+        { pattern: 3.14 },
+        { pattern: "[[[" },
       ];
 
       for (const schema of badSchemas) {
