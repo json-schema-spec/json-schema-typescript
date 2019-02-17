@@ -30,7 +30,7 @@ describe("Validator", () => {
                   }
 
                   return a.schemaPath < b.schemaPath ? -1 : 1;
-                }
+                };
 
                 const expected = errors.map((error: any) => {
                   return { uri: error.uri || "", ...error };
