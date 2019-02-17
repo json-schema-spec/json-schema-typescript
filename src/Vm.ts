@@ -280,6 +280,24 @@ export default class Vm {
           this.stack.popSchemaToken();
         }
       }
+
+      if (schema.contains) {
+        let containsOk = false;
+        const itemSchema = this.registry.getIndex(schema.contains.schema);
+        for (const elem of instance) {
+          const itemErrors = this.pseudoExec(itemSchema, elem);
+          if (!itemErrors) {
+            containsOk = true;
+            break;
+          }
+        }
+
+        if (!containsOk) {
+          this.stack.pushSchemaToken("contains");
+          this.reportError();
+          this.stack.popSchemaToken();
+        }
+      }
     } else {
       if (schema.type && !schema.type.types.includes(JSONType.Object)) {
         this.stack.pushSchemaToken("type");

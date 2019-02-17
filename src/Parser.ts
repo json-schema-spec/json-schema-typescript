@@ -294,6 +294,15 @@ export default class Parser {
           throw new InvalidSchemaError();
         }
       }
+
+      const contains = (input as any).contains;
+      if (contains !== undefined) {
+        this.push("contains");
+        const containsSchema = this.parse(contains);
+        this.pop();
+
+        schema.contains = { schema: containsSchema };
+      }
     } else {
       throw new InvalidSchemaError();
     }
