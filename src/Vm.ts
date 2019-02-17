@@ -169,6 +169,13 @@ export default class Vm {
         this.stack.popSchemaToken();
       }
 
+      // Note regarding the [...instance] stuff in maxLength and minLength:
+      //
+      // The length property of a JavaScript string is based on UTF-16 (loosely
+      // speaking). JSON Schema specifies string length in terms of Unicode
+      // codepoints, so we convert the string into an array, a process which is
+      // Unicode-codepoint-aware.
+
       if (schema.maxLength) {
         if ([...instance].length > schema.maxLength.value) {
           this.stack.pushSchemaToken("maxLength");
