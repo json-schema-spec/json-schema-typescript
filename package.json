@@ -1,4 +1,20 @@
 {
+  "name": "@json-schema-spec/json-schema",
+  "version": "0.1.0",
+  "main": "lib/index.js",
+  "repository": "git@github.com:json-schema-spec/json-schema-typescript.git",
+  "author": "Ulysse Carion <ulyssecarion@gmail.com>",
+  "license": "MIT",
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "@json-schema-spec/json-pointer": "^0.1.2",
+    "@types/deep-equal": "^1.0.1",
+    "deep-equal": "^1.0.1",
+    "tslint": "^5.12.1",
+    "uri-js": "^4.2.2"
+  },
   "devDependencies": {
     "@types/jest": "^23.0.0",
     "@types/node": "^10.12.24",
@@ -7,12 +23,9 @@
     "typedoc": "^0.14.2",
     "typescript": "^3.3.1"
   },
-  "dependencies": {
-    "@json-schema-spec/json-pointer": "^0.1.2",
-    "@types/deep-equal": "^1.0.1",
-    "deep-equal": "^1.0.1",
-    "tslint": "^5.12.1",
-    "uri-js": "^4.2.2"
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
   },
   "jest": {
     "transform": {
