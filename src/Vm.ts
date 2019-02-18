@@ -410,6 +410,19 @@ export default class Vm {
 
         this.stack.popSchemaToken();
       }
+
+      if (schema.propertyNames) {
+        this.stack.pushSchemaToken("propertyNames");
+
+        const propertyNamesSchema = this.registry.getIndex(schema.propertyNames.schema);
+        for (const propertyName of Object.keys(instance)) {
+          this.stack.pushInstanceToken(propertyName);
+          this.execSchema(propertyNamesSchema, propertyName);
+          this.stack.popInstanceToken();
+        }
+
+        this.stack.popSchemaToken();
+      }
     }
 
     return new ValidationResult(this.errors);

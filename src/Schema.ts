@@ -34,6 +34,7 @@ export default interface Schema {
   patternProperties?: SchemaPatternProperties;
   additionalProperties?: SchemaAdditionalProperties;
   dependencies?: SchemaDependencies;
+  propertyNames?: SchemaPropertyNames;
 }
 
 export interface SchemaBool {
@@ -165,6 +166,10 @@ export interface SchemaDependency {
   isSchema: boolean;
   schema: number;
   properties: string[];
+}
+
+export interface SchemaPropertyNames {
+  schema: number;
 }
 
 export enum JSONType {

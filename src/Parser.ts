@@ -428,6 +428,15 @@ export default class Parser {
           throw new InvalidSchemaError();
         }
       }
+
+      const propertyNames = (input as any).propertyNames;
+      if (propertyNames !== undefined) {
+        this.push("propertyNames");
+        const propertyNamesSchema = this.parse(propertyNames);
+        this.pop();
+
+        schema.propertyNames = { schema: propertyNamesSchema };
+      }
     } else {
       throw new InvalidSchemaError();
     }
