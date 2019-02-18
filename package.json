@@ -12,7 +12,6 @@
     "@json-schema-spec/json-pointer": "^0.1.2",
     "@types/deep-equal": "^1.0.1",
     "deep-equal": "^1.0.1",
-    "tslint": "^5.12.1",
     "uri-js": "^4.2.2"
   },
   "devDependencies": {
@@ -20,6 +19,7 @@
     "@types/node": "^10.12.24",
     "jest": "^23.0.0",
     "ts-jest": "^23.10.5",
+    "tslint": "^5.12.1",
     "typedoc": "^0.14.2",
     "typescript": "^3.3.1"
   },
