@@ -166,5 +166,19 @@ describe("Validator", () => {
         validator.validate(null);
       }).toThrowError(new StackOverflowError());
     });
+
+    it("respects a maximum number of errors", () => {
+      const validator = new Validator([
+        { allOf: [ { type: "null" }, { $ref: "#" }] },
+      ], { maxErrors: 5 });
+
+      const expected = Array(5).fill({
+        instancePath: new Ptr([]),
+        schemaPath: new Ptr(["allOf", "0", "type"]),
+        schemaURI: "",
+      });
+
+      expect(validator.validate(true).errors).toEqual(expected);
+    });
   });
 });

@@ -17,15 +17,17 @@ const DEFAULT_MAX_STACK_DEPTH = 128;
 
 export class Validator {
   private maxStackDepth: number;
+  private maxErrors: number;
   private registry: Registry;
 
   constructor(schemas: any[], config?: ValidatorConfig) {
     const concreteConfig = {
-      ...config,
       maxErrors: DEFAULT_MAX_ERRORS,
       maxStackDepth: DEFAULT_MAX_STACK_DEPTH,
+      ...config,
     };
 
+    this.maxErrors = concreteConfig.maxErrors;
     this.maxStackDepth = concreteConfig.maxStackDepth;
 
     const registry = new Registry();
@@ -68,7 +70,7 @@ export class Validator {
   }
 
   public validateURI(uri: string, instance: any): ValidationResult {
-    const vm = new Vm(this.registry, this.maxStackDepth);
+    const vm = new Vm(this.registry, this.maxStackDepth, this.maxErrors);
     return vm.exec(uri, instance);
   }
 }

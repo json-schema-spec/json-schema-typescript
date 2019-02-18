@@ -1,3 +1,4 @@
+import MaxErrorsError from "./MaxErrorsError";
 import Registry from "./Registry";
 import Schema, { JSONType } from "./Schema";
 import Stack from "./Stack";
@@ -13,28 +14,40 @@ export default class Vm {
   private stack: Stack;
   private errors: ValidationError[];
   private maxStackDepth: number;
+  private maxErrors: number;
 
-  constructor(registry: Registry, maxStackDepth: number) {
+  constructor(registry: Registry, maxStackDepth: number, maxErrors: number) {
     this.registry = registry;
     this.stack = new Stack();
     this.errors = [];
     this.maxStackDepth = maxStackDepth;
+    this.maxErrors = maxErrors;
   }
 
   public exec(uri: string, instance: any): ValidationResult {
     this.stack.pushSchema(uri, []);
     const schema = this.registry.get(uri);
 
-    return this.execSchema(schema, instance);
+    try {
+      this.execSchema(schema, instance);
+    } catch (err) {
+      if (err instanceof MaxErrorsError) {
+        // Not a real error -- it's just a circuit breaker. Instead, swallow
+        // this error. And proceed without errors.
+      } else {
+        // A real error -- rethrow.
+        throw err;
+      }
+    }
+
+    return new ValidationResult(this.errors);
   }
 
-  private execSchema(schema: Schema, instance: any): ValidationResult {
+  private execSchema(schema: Schema, instance: any) {
     if (schema.bool) {
       if (!schema.bool.value) {
         this.reportError();
       }
-
-      return new ValidationResult(this.errors);
     }
 
     if (schema.ref) {
@@ -482,8 +495,6 @@ export default class Vm {
         this.stack.popSchemaToken();
       }
     }
-
-    return new ValidationResult(this.errors);
   }
 
   private pseudoExec(schema: Schema, instance: any): boolean {
@@ -500,5 +511,9 @@ export default class Vm {
 
   private reportError() {
     this.errors.push(this.stack.error());
+
+    if (this.errors.length === this.maxErrors) {
+      throw new MaxErrorsError();
+    }
   }
 }
