@@ -3,7 +3,7 @@ import * as URI from "uri-js";
 
 import InvalidSchemaError from "./InvalidSchemaError";
 import Registry from "./Registry";
-import Schema, { parseJSONType } from "./Schema";
+import Schema, { parseJSONType, SchemaDependency } from "./Schema";
 
 export default class Parser {
   public static parseRootSchema(registry: Registry, input: any): Schema {
@@ -397,6 +397,36 @@ export default class Parser {
         this.pop();
 
         schema.additionalProperties = { schema: additionalPropertiesSchema };
+      }
+
+      const dependencies = (input as any).dependencies;
+      if (dependencies !== undefined) {
+        if (typeof dependencies === "object") {
+          const deps: Map<string, SchemaDependency> = new Map();
+
+          this.push("dependencies");
+          for (const [key, value] of Object.entries(dependencies)) {
+            if (Array.isArray(value)) {
+              // Do an initial pass to make sure all elements are arrays.
+              for (const elem of value) {
+                if (typeof elem !== "string") {
+                  throw new InvalidSchemaError();
+                }
+              }
+
+              deps.set(key, { isSchema: false, schema: -1, properties: value });
+            } else {
+              this.push(key);
+              deps.set(key, { isSchema: true, schema: this.parse(value), properties: [] });
+              this.pop();
+            }
+          }
+          this.pop();
+
+          schema.dependencies = { deps };
+        } else {
+          throw new InvalidSchemaError();
+        }
       }
     } else {
       throw new InvalidSchemaError();

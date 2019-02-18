@@ -33,6 +33,7 @@ export default interface Schema {
   properties?: SchemaProperties;
   patternProperties?: SchemaPatternProperties;
   additionalProperties?: SchemaAdditionalProperties;
+  dependencies?: SchemaDependencies;
 }
 
 export interface SchemaBool {
@@ -154,6 +155,16 @@ export interface SchemaPatternProperties {
 
 export interface SchemaAdditionalProperties {
   schema: number;
+}
+
+export interface SchemaDependencies {
+  deps: Map<string, SchemaDependency>;
+}
+
+export interface SchemaDependency {
+  isSchema: boolean;
+  schema: number;
+  properties: string[];
 }
 
 export enum JSONType {

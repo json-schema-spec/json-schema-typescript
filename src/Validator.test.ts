@@ -115,6 +115,9 @@ describe("Validator", () => {
         { patternProperties: { "[[[": {} } },
         { patternProperties: { "*": 3.14 } },
         { additionalProperties: 3.14 },
+        { dependencies: "not-an-object" },
+        { dependencies: { foo: "not-an-object-or-array" } },
+        { dependencies: { foo: [3.14] } },
       ];
 
       for (const schema of badSchemas) {

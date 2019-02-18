@@ -382,6 +382,34 @@ export default class Vm {
           this.stack.popSchemaToken();
         }
       }
+
+      if (schema.dependencies) {
+        this.stack.pushSchemaToken("dependencies");
+
+        for (const [property, dependency] of schema.dependencies.deps.entries()) {
+          this.stack.pushSchemaToken(property);
+
+          if (instance.hasOwnProperty(property)) {
+            if (dependency.isSchema) {
+              const propertySchema = this.registry.getIndex(dependency.schema);
+
+              this.execSchema(propertySchema, instance);
+            } else {
+              for (const [index, expectedProperty] of dependency.properties.entries()) {
+                if (!instance.hasOwnProperty(expectedProperty)) {
+                  this.stack.pushSchemaToken(index.toString());
+                  this.reportError();
+                  this.stack.popSchemaToken();
+                }
+              }
+            }
+          }
+
+          this.stack.popSchemaToken();
+        }
+
+        this.stack.popSchemaToken();
+      }
     }
 
     return new ValidationResult(this.errors);
