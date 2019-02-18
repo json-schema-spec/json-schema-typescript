@@ -35,6 +35,9 @@ export default interface Schema {
   additionalProperties?: SchemaAdditionalProperties;
   dependencies?: SchemaDependencies;
   propertyNames?: SchemaPropertyNames;
+  allOf?: SchemaAllOf;
+  anyOf?: SchemaAnyOf;
+  oneOf?: SchemaOneOf;
 }
 
 export interface SchemaBool {
@@ -170,6 +173,18 @@ export interface SchemaDependency {
 
 export interface SchemaPropertyNames {
   schema: number;
+}
+
+export interface SchemaAllOf {
+  schemas: number[];
+}
+
+export interface SchemaAnyOf {
+  schemas: number[];
+}
+
+export interface SchemaOneOf {
+  schemas: number[];
 }
 
 export enum JSONType {

@@ -437,6 +437,66 @@ export default class Parser {
 
         schema.propertyNames = { schema: propertyNamesSchema };
       }
+
+      const allOf = (input as any).allOf;
+      if (allOf !== undefined) {
+        if (Array.isArray(allOf)) {
+          this.push("allOf");
+
+          const schemas = [];
+          for (const [index, elem] of allOf.entries()) {
+            this.push(index.toString());
+            schemas.push(this.parse(elem));
+            this.pop();
+          }
+
+          this.pop();
+
+          schema.allOf = { schemas };
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
+
+      const anyOf = (input as any).anyOf;
+      if (anyOf !== undefined) {
+        if (Array.isArray(anyOf)) {
+          this.push("anyOf");
+
+          const schemas = [];
+          for (const [index, elem] of anyOf.entries()) {
+            this.push(index.toString());
+            schemas.push(this.parse(elem));
+            this.pop();
+          }
+
+          this.pop();
+
+          schema.anyOf = { schemas };
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
+
+      const oneOf = (input as any).oneOf;
+      if (oneOf !== undefined) {
+        if (Array.isArray(oneOf)) {
+          this.push("oneOf");
+
+          const schemas = [];
+          for (const [index, elem] of oneOf.entries()) {
+            this.push(index.toString());
+            schemas.push(this.parse(elem));
+            this.pop();
+          }
+
+          this.pop();
+
+          schema.oneOf = { schemas };
+        } else {
+          throw new InvalidSchemaError();
+        }
+      }
     } else {
       throw new InvalidSchemaError();
     }

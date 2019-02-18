@@ -75,6 +75,64 @@ export default class Vm {
       }
     }
 
+    if (schema.allOf) {
+      this.stack.pushSchemaToken("allOf");
+
+      for (const [index, subSchemaIndex] of schema.allOf.schemas.entries()) {
+        const subSchema = this.registry.getIndex(subSchemaIndex);
+
+        this.stack.pushSchemaToken(index.toString());
+        this.execSchema(subSchema, instance);
+        this.stack.popSchemaToken();
+      }
+
+      this.stack.popSchemaToken();
+    }
+
+    if (schema.anyOf) {
+      let anyOfOk = false;
+
+      for (const subSchemaIndex of schema.anyOf.schemas) {
+        const subSchema = this.registry.getIndex(subSchemaIndex);
+
+        const subSchemaErrors = this.pseudoExec(subSchema, instance);
+        if (!subSchemaErrors) {
+          anyOfOk = true;
+          break;
+        }
+      }
+
+      if (!anyOfOk) {
+        this.stack.pushSchemaToken("anyOf");
+        this.reportError();
+        this.stack.popSchemaToken();
+      }
+    }
+
+    if (schema.oneOf) {
+      let oneOfOk = false;
+
+      for (const subSchemaIndex of schema.oneOf.schemas) {
+        const subSchema = this.registry.getIndex(subSchemaIndex);
+
+        const subSchemaErrors = this.pseudoExec(subSchema, instance);
+        if (!subSchemaErrors) {
+          if (oneOfOk) {
+            oneOfOk = false;
+            break;
+          } else {
+            oneOfOk = true;
+          }
+        }
+      }
+
+      if (!oneOfOk) {
+        this.stack.pushSchemaToken("oneOf");
+        this.reportError();
+        this.stack.popSchemaToken();
+      }
+    }
+
     if (schema.const) {
       if (!deepEqual(schema.const.value, instance)) {
         this.stack.pushSchemaToken("const");

@@ -119,6 +119,12 @@ describe("Validator", () => {
         { dependencies: { foo: "not-an-object-or-array" } },
         { dependencies: { foo: [3.14] } },
         { propertyNames: "not-a-schema" },
+        { allOf: "not-an-array" },
+        { allOf: ["not-a-schema"] },
+        { anyOf: "not-an-array" },
+        { anyOf: ["not-a-schema"] },
+        { oneOf: "not-an-array" },
+        { oneOf: ["not-a-schema"] },
       ];
 
       for (const schema of badSchemas) {
